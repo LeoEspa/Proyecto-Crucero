@@ -5,15 +5,6 @@
 
 using namespace std;
 
-
-//Estrutura pasajeros
-struct Pasajeros{
-	string NombreDelSolicitante;
-	string Genero;
-	int Edad, Npasaporte, Nreserva;
-	
-};
-
 // Estructura para un pasajero
 struct Pasajero {
     string nombre;
