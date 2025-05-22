@@ -14,6 +14,52 @@ struct Pasajeros{
 	
 };
 
+// Estructura para un pasajero
+struct Pasajero {
+    string nombre;
+    int edad;
+    string genero;           // "Masculino" o "Femenino"
+    string tipo_camarote;    // "Interior", "Exterior", "Balcón", "Suite"
+    double precio_pasaje;    // Precio en euros
+};
+
+// Estructura para fecha (salida y reserva)
+struct Fecha {
+    int dia;
+    int mes;
+    int año;
+};
+
+// Estructura para hora de embarque
+struct Hora {
+    int horas;
+    int minutos;
+};
+
+// Estructura principal de reserva
+struct ReservaCrucero {
+    string numero_reserva;   // Identificador único
+    
+    struct {
+        string nombre;
+        string pasaporte;
+        int edad;
+        string genero;
+    } solicitante;
+    
+    string puerto_salida;    // Ej: Miami, Barcelona
+    string destino;          // Ej: Caribe, Mediterráneo
+    string linea_crucero;    // Ej: "Harmony of the Seas"
+    string codigo_viaje;     // Código de itinerario
+    
+    Fecha fecha_salida;
+    Hora hora_embarque;
+    string categoria_cabina; // "Interior", "Exterior", etc.
+    
+    vector<Pasajero> pasajeros;  // Máximo 4 pasajeros
+    Fecha fecha_reserva;
+    bool activa;            // true = activa, false = cancelada
+}; de 
 
 int validar(int ini, int fin){
 	int N;
@@ -26,7 +72,7 @@ int validar(int ini, int fin){
 
 
 
-//Inicio de la Funci� Main
+//Inicio de la Funció Main
 int main() {
 	
 int opcion;
@@ -43,7 +89,7 @@ bool salir = false;
         cout << "5. CANCELAR/REACTIVAR" << endl;
         cout << "6. REPORTES" << endl;
         cout << "7. SALIR" << endl;
-        cout << "Ingrese opci�n: ";
+        cout << "Ingrese opción: ";
         cin >> opcion;
 
         switch (opcion) {
@@ -78,7 +124,7 @@ bool salir = false;
         cout << "3. CANCELACION POR EDAD" << endl;
         cout << "4. REVISION DE CAPACIDADES DE CABINA" << endl;
         cout << "5. Salir" << endl;
-        cout << "Ingrese opci�n: ";
+        cout << "Ingrese opción: ";
         cin >> opcion;
 
         switch (opcion2) {
@@ -127,4 +173,4 @@ bool salir = false;
 	
 	
 	return 0;
-}//Fin de la Funci�n Main
+}//Fin de la Función Main
