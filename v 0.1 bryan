@@ -1,0 +1,383 @@
+#include <iostream>
+#include <conio.h>
+#include <stdio.h>
+#include <windows.h>
+#include <string.h>
+#include <fstream>
+#include <locale.h>
+using namespace std;
+
+// Estructuras de datos
+struct Fecha {
+    int dia, mes, anio;
+};
+
+struct Pasajero {
+    char nombre[50];
+    int edad;
+    char genero[15];
+    char tipo_camarote[20];
+    float precio_pasaje;
+};
+
+struct Reserva {
+    char numero_reserva[20];
+    char nombre_solicitante[50];
+    char pasaporte[20];
+    int edad;
+    char genero[15];
+    char puerto_salida[50];
+    char destino[50];
+    char linea_crucero[50];
+    char codigo_viaje[20];
+    Fecha fecha_salida;
+    int hora_embarque;
+    int minuto_embarque;
+    char categoria_cabina[20];
+    Pasajero pasajeros[4];
+    int num_pasajeros;
+    float precio_total;
+    Fecha fecha_reserva;
+    bool activa;
+};
+
+// Prototipos de funciones, vayan agregandolas aquí
+void gotoxy(int x, int y);
+void marco();
+void incluir();
+bool validarFecha(Fecha f);
+bool validarFechasReserva(Fecha fechaReserva, Fecha fechaSalida);
+bool validarHoraEmbarque(int horas, int minutos);
+int buscarReserva(char numero[20], Reserva &res);
+float calcularPrecioTotal(Reserva &r);
+
+// Función principal
+int main() {
+    setlocale(LC_ALL, "spanish");
+    int op;
+    
+    do {
+        system("CLS");
+        marco();
+        gotoxy(45, 3); cout << "OCEANO AZUL - SISTEMA DE RESERVAS";
+        gotoxy(40, 6); cout << "1. INCLUIR RESERVA";
+        gotoxy(40, 8); cout << "2. CONSULTAR RESERVA";
+        gotoxy(40, 10); cout << "3. MODIFICAR RESERVA";
+        gotoxy(40, 12); cout << "4. ELIMINAR RESERVA";
+        gotoxy(40, 14); cout << "5. CANCELAR/REACTIVAR";
+        gotoxy(40, 16); cout << "6. REPORTES";
+        gotoxy(40, 18); cout << "0. SALIR";
+        gotoxy(40, 22); cout << "OPCION: ";
+        cin >> op;
+        
+        switch(op) {
+            case 1: incluir(); break;
+            // case 2: consultar(); break;
+            // case 3: modificar(); break;
+            // case 4: eliminar(); break;
+            // case 5: cancelarReactivar(); break;
+            // case 6: reportes(); break;
+        }
+    } while(op != 0);
+    
+    return 0;
+}
+
+// Implementación de funciones
+void gotoxy(int x, int y) {
+    HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD dwPos;
+    dwPos.X = x;
+    dwPos.Y = y;
+    SetConsoleCursorPosition(hcon, dwPos);
+}
+
+// Estética
+void marco() {
+    int x;
+    for (x = 1; x <= 118; x++) {
+        gotoxy(x, 1); printf("=");
+        gotoxy(x, 29); printf("=");
+        if (x <= 29) {
+            gotoxy(1, x); printf("|");
+            gotoxy(118, x); printf("|");
+        }
+    }
+}
+
+bool validarFecha(Fecha f) {
+    if (f.anio < 2023 || f.anio > 2100) return false;
+    if (f.mes < 1 || f.mes > 12) return false;
+    if (f.dia < 1 || f.dia > 31) return false;
+
+    if ((f.mes == 4 || f.mes == 6 || f.mes == 9 || f.mes == 11) && f.dia > 30) {
+        return false;
+    }
+    
+    if (f.mes == 2 && f.dia > 28) {
+        return false;
+    }
+
+    return true;
+}
+
+bool validarFechasReserva(Fecha fechaReserva, Fecha fechaSalida) {
+    if (fechaSalida.anio < fechaReserva.anio) return false;
+    if (fechaSalida.anio == fechaReserva.anio && fechaSalida.mes < fechaReserva.mes) return false;
+    if (fechaSalida.anio == fechaReserva.anio && fechaSalida.mes == fechaReserva.mes && 
+        fechaSalida.dia <= fechaReserva.dia) return false;
+
+    return true;
+}
+
+bool validarHoraEmbarque(int horas, int minutos) {
+    if (horas < 0 || horas > 23) return false;
+    if (minutos < 0 || minutos > 59) return false;
+    return true;
+}
+
+int buscarReserva(char numero[20], Reserva &res) {
+    int encontrado = 0;
+    FILE *arch = fopen("CRUCEROS.dat", "rb");
+    if (arch != NULL) {
+        while (fread(&res, sizeof(Reserva), 1, arch) == 1 && !encontrado) {
+            if (strcmp(res.numero_reserva, numero) == 0) {
+                encontrado = 1;
+            }
+        }
+        fclose(arch);
+    }
+    return encontrado;
+}
+
+float calcularPrecioTotal(Reserva &r) {
+    float total = 0;
+    for (int i = 0; i < r.num_pasajeros; i++) {
+        total += r.pasajeros[i].precio_pasaje;
+    }
+    return total;
+}
+
+void incluir() {
+	setlocale(LC_ALL, "spanish");
+    Reserva nueva;
+    char temp[50];
+    int i, x, y = 7;
+    system("CLS");
+    marco();
+    
+    gotoxy(3, 3);
+    cout << "INGRESAR NUEVA RESERVA";
+    gotoxy(3, 5);
+    cout << "Número de reserva: ";
+    fflush(stdin);
+    gets(nueva.numero_reserva);
+    
+    if (buscarReserva(nueva.numero_reserva, nueva) == 0) {
+        // Datos del solicitante
+        gotoxy(3, 6);
+        cout << "Nombre del solicitante: ";
+        fflush(stdin);
+        gets(nueva.nombre_solicitante);
+        
+        gotoxy(3, 7);
+        cout << "Pasaporte: ";
+        fflush(stdin);
+        gets(nueva.pasaporte);
+        
+        gotoxy(3, 8);
+        cout << "Edad: ";
+        cin >> nueva.edad;
+        
+        gotoxy(3, 9);
+        cout << "Género (M/F): ";
+        fflush(stdin);
+        gets(temp);
+        strcpy(nueva.genero, (strcmp(temp, "M") == 0) ? "Masculino" : "Femenino");
+        
+        // Datos del viaje
+        gotoxy(3, 11);
+        cout << "Puerto de salida: ";
+        fflush(stdin);
+        gets(nueva.puerto_salida);
+        
+        gotoxy(3, 12);
+        cout << "Destino: ";
+        fflush(stdin);
+        gets(nueva.destino);
+        
+        gotoxy(3, 13);
+        cout << "Línea de crucero: ";
+        fflush(stdin);
+        gets(nueva.linea_crucero);
+        
+        gotoxy(3, 14);
+        cout << "Código de viaje: ";
+        fflush(stdin);
+        gets(nueva.codigo_viaje);
+        
+        // Fecha de reserva
+        bool fechaReservaValida = false;
+        do {
+            gotoxy(3, 16);
+            cout << "Fecha de reserva (dd mm aaaa): ";
+            cin >> nueva.fecha_reserva.dia >> nueva.fecha_reserva.mes >> nueva.fecha_reserva.anio;
+            
+            if (!validarFecha(nueva.fecha_reserva)) {
+                gotoxy(3, 17);
+                cout << "¡Fecha de reserva inválida!";
+                getch();
+                gotoxy(3, 17);
+                cout << "                         ";
+            } else {
+                fechaReservaValida = true;
+            }
+        } while (!fechaReservaValida);
+        
+        // Fecha de salida
+        bool fechaSalidaValida = false;
+        do {
+            gotoxy(3, 18);
+            cout << "Fecha de salida (dd mm aaaa): ";
+            cin >> nueva.fecha_salida.dia >> nueva.fecha_salida.mes >> nueva.fecha_salida.anio;
+            
+            if (!validarFecha(nueva.fecha_salida)) {
+                gotoxy(3, 19);
+                cout << "¡Fecha de salida inválida!";
+                getch();
+                gotoxy(3, 19);
+                cout << "                         ";
+            } else if (!validarFechasReserva(nueva.fecha_reserva, nueva.fecha_salida)) {
+                gotoxy(3, 19);
+                cout << "¡Debe ser posterior a la fecha de reserva!";
+                getch();
+                gotoxy(3, 19);
+                cout << "                                    ";
+            } else {
+                fechaSalidaValida = true;
+            }
+        } while (!fechaSalidaValida);
+        
+        // Hora de embarque
+        bool horaValida = false;
+        do {
+            gotoxy(3, 20);
+            cout << "Hora de embarque (hh mm, 0-23 0-59): ";
+            cin >> nueva.hora_embarque >> nueva.minuto_embarque;
+            
+            if (!validarHoraEmbarque(nueva.hora_embarque, nueva.minuto_embarque)) {
+                gotoxy(3, 21);
+                cout << "¡Hora invalida! Use formato 24h (0-23 horas, 0-59 minutos)";
+                getch();
+                gotoxy(3, 21);
+                cout << "                                                       ";
+            } else {
+                horaValida = true;
+            }
+        } while (!horaValida);
+        
+        // Categoría de cabina
+        gotoxy(3, 22);
+        cout << "Categoría de cabina (1-4):";
+        gotoxy(3, 23);
+        cout << "1. Interior";
+        gotoxy(3, 24);
+        cout << "2. Exterior";
+        gotoxy(3, 25);
+        cout << "3. Balcón";
+        gotoxy(3, 26);
+        cout << "4. Suite";
+        
+        int op;
+        do {
+            gotoxy(3, 28);
+            cout << "Opción: ";
+            cin >> op;
+            if (op < 1 || op > 4) {
+                gotoxy(3, 29);
+                cout << "¡Opción invalida!";
+                getch();
+                gotoxy(3, 29);
+                cout << "               ";
+            }
+        } while (op < 1 || op > 4);
+        
+        switch(op) {
+            case 1: strcpy(nueva.categoria_cabina, "Interior"); break;
+            case 2: strcpy(nueva.categoria_cabina, "Exterior"); break;
+            case 3: strcpy(nueva.categoria_cabina, "Balcón"); break;
+            case 4: strcpy(nueva.categoria_cabina, "Suite"); break;
+        }
+        
+        // Número de pasajeros adicionales
+        gotoxy(40, 22);
+        cout << "¡Número de pasajeros adicionales (1-4): ";
+        do {
+            cin >> nueva.num_pasajeros;
+            if (nueva.num_pasajeros < 1 || nueva.num_pasajeros > 4) {
+                gotoxy(40, 23);
+                cout << "¡Deben ser entre 1 y 4 pasajeros!";
+                getch();
+                gotoxy(40, 23);
+                cout << "                              ";
+                gotoxy(40, 22);
+                cout << "                                          ";
+                gotoxy(40, 22);
+                cout << "¡Numero de pasajeros adicionales (1-4): ";
+            }
+        } while (nueva.num_pasajeros < 1 || nueva.num_pasajeros > 4);
+        
+        // Datos de pasajeros adicionales
+        for (i = 0; i < nueva.num_pasajeros - 1; i++) {
+            system("CLS");
+            marco();
+            gotoxy(3, 3);
+            cout << "DATOS DEL PASAJERO " << i+1;
+            
+            gotoxy(3, 5);
+            cout << "Nombre: ";
+            fflush(stdin);
+            gets(nueva.pasajeros[i].nombre);
+            
+            gotoxy(3, 6);
+            cout << "Edad: ";
+            cin >> nueva.pasajeros[i].edad;
+            
+            gotoxy(3, 7);
+            cout << "Genero (M/F): ";
+            fflush(stdin);
+            gets(temp);
+            strcpy(nueva.pasajeros[i].genero, (strcmp(temp, "M") == 0) ? "Masculino" : "Femenino");
+            
+            gotoxy(3, 8);
+            cout << "Tipo de camarote: ";
+            fflush(stdin);
+            gets(nueva.pasajeros[i].tipo_camarote);
+            
+            gotoxy(3, 9);
+            cout << "Precio pasaje (EUR): ";
+            cin >> nueva.pasajeros[i].precio_pasaje;
+        }
+        
+        // Calcular precio total
+        nueva.precio_total = calcularPrecioTotal(nueva);
+        
+        // Estado inicial
+        nueva.activa = true;
+        
+        FILE *arch = fopen("CRUCEROS.dat", "ab");
+        if (arch != NULL) {
+            fwrite(&nueva, sizeof(Reserva), 1, arch);
+            fclose(arch);
+            gotoxy(3, 30);
+            cout << "RESERVA REGISTRADA - TOTAL: " << nueva.precio_total << " EUR";
+        } else {
+            gotoxy(3, 30);
+            cout << "ERROR AL GUARDAR LA RESERVA";
+        }
+    } else {
+        gotoxy(3, 4);
+        cout << "RESERVA YA EXISTE";
+    }
+    getch();
+} 
