@@ -1,0 +1,34 @@
+Numero de reserva: ABC
+Nombre: Pedro Porro
+Pasaporte: EFG
+Edad: 32
+Genero: Masculino
+Viaja: Si
+
+Puerto de salida: Barcelona
+Destino: Londres
+Linea:Cruceros SA
+Codigo de viaje: XYZ
+Cabina: Suite
+
+Fecha de salida (mm/dd/yy): 1/1/2026
+Hora de embarque: 00:00
+Fecha de reserva (mm/dd//yy): 10/10/2025
+
+Npasajeros=2 (1+1)
+
+Pasajero1
+Nombre: Pedro Porro
+Edad: 32
+Genero: Masculino
+Camarote: 1-a
+Precio: 120
+
+Pasajero2
+Nombre:Valeria Sanchez
+Edad: 15
+genero:Femenino
+camarote: 1-b
+precio: 240
+
+total de reserva: 360
