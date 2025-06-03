@@ -492,15 +492,13 @@ void incluir(){
 void mostrarReserva(Reserva res) {
     system("CLS"); // Limpia la pantalla
     marco();       // Dibuja el marco
-    int y = 3;     // Posición Y inicial para escribir dentro del marco
+    int y = 3;
 
     gotoxy(35, y++); cout << "--- DETALLES DE LA RESERVA ---";
-    y++; // Línea en blanco
-
+    y++;
     gotoxy(3, y++); cout << "Numero de Reserva: " << res.numero_reserva;
     gotoxy(3, y++); cout << "Estado: " << (res.activa ? "Activa" : "Cancelada");
     y++;
-
     gotoxy(3, y++); cout << "-- Solicitante --";
     gotoxy(5, y++); cout << "Nombre: " << res.soli.nombre;
     gotoxy(5, y++); cout << "Pasaporte: " << res.soli.pasaporte;
@@ -509,50 +507,42 @@ void mostrarReserva(Reserva res) {
     gotoxy(5, y++); cout << "El solicitante viaja?: " << res.soli.viaja;
     y++;
 
-    // Intentamos mostrar detalles del viaje si hay espacio
-    if (y < 20) { // Deja espacio para al menos algunos pasajeros y el total
-        gotoxy(3, y++); cout << "-- Detalles del Viaje --";
-        gotoxy(5, y++); cout << "Puerto de Salida: " << res.puerto_salida;
-        gotoxy(5, y++); cout << "Destino: " << res.destino;
-        gotoxy(5, y++); cout << "Linea de Crucero: " << res.linea_crucero;
-        gotoxy(5, y++); cout << "Codigo de Viaje: " << res.codigo_viaje;
-        gotoxy(5, y++); cout << "Categoria de Cabina: " << res.categoria_cabina;
-        gotoxy(5, y++); cout << "Fecha de Salida: " << res.fecha_salida.dia << "/" << res.fecha_salida.mes << "/" << res.fecha_salida.anio;
-        gotoxy(5, y++); cout << "Hora de Embarque: " << res.embarque.hora << ":" << res.embarque.minuto;
-        gotoxy(5, y++); cout << "Fecha de Reserva: " << res.fecha_reserva.dia << "/" << res.fecha_reserva.mes << "/" << res.fecha_reserva.anio;
-        y++;
-    } else {
-        gotoxy(3, y++); cout << "(Mas detalles del viaje omitidos por espacio)";
-    }
+    gotoxy(3, y++); cout << "-- Detalles del Viaje --";
+    gotoxy(5, y++); cout << "Puerto de Salida: " << res.puerto_salida;
+    gotoxy(5, y++); cout << "Destino: " << res.destino;
+    gotoxy(5, y++); cout << "Linea de Crucero: " << res.linea_crucero;
+    gotoxy(5, y++); cout << "Codigo de Viaje: " << res.codigo_viaje;
+    gotoxy(5, y++); cout << "Categoria de Cabina: " << res.categoria_cabina;
+    gotoxy(5, y++); cout << "Fecha de Salida: " << res.fecha_salida.dia << "/" << res.fecha_salida.mes << "/" << res.fecha_salida.anio;
+    gotoxy(5, y++); cout << "Hora de Embarque: " << res.embarque.hora << ":" << res.embarque.minuto;
+    gotoxy(5, y++); cout << "Fecha de Reserva: " << res.fecha_reserva.dia << "/" << res.fecha_reserva.mes << "/" << res.fecha_reserva.anio;
+    y++;
+    
+    gotoxy(5, y++); cout << "-- Total --";
+    gotoxy(5, y++); cout << "Precio Total: " << res.precio_total << " EUR";
+    y++; 
+    
+    // NUEVO: Preguntar al usuario si quiere ver los pasajeros
+    char respuesta;
+    gotoxy(5, y++); cout << "--Â¿Desea ver la lista de pasajeros? (S/N): ";y++;
+    respuesta = getch(); // Lee una tecla sin enter
 
-
-    gotoxy(3, y++); cout << "-- Pasajeros (" << res.num_pasajeros << ") --";
-    if (res.num_pasajeros == 0) {
-        gotoxy(5, y++); cout << "No hay pasajeros adicionales registrados.";
-    } else {
-        for (int i = 0; i < res.num_pasajeros && y < 26; i++) { // Limitar para no sobrescribir el pie de página
+    if (respuesta == 'S' || respuesta == 's') {
+        gotoxy(3, y++); cout << "-- Pasajeros (" << res.num_pasajeros << ") --";y++;
+        for (int i = 0; i < res.num_pasajeros; i++) {
             gotoxy(5, y++); cout << "  P" << i + 1 << ": " << res.pasajeros[i].nombre 
                                  << " (Edad: " << res.pasajeros[i].edad 
-                                 << ", Cam: " << res.pasajeros[i].tipo_camarote 
-                                 << ", EUR" << res.pasajeros[i].precio_pasaje << ")";
-            if (y >= 26 && i < res.num_pasajeros - 1) {
-                gotoxy(7, y++); cout << "  (...mas pasajeros omitidos por espacio)";
-                break; 
-            }
+                                 << ", Genero: " << res.pasajeros[i].genero
+                                 << ", Camarote: " << res.pasajeros[i].tipo_camarote 
+                                 << ", EUR " << res.pasajeros[i].precio_pasaje << ")";
         }
-    }
-    y++;
-
-    if (y < 27) {
-        gotoxy(3, y++); cout << "-- Total --";
-        gotoxy(5, y++); cout << "Precio Total: " << res.precio_total << " EUR";
     } else {
-        gotoxy(3, y -1 < 27 ? y-1 : 27); cout << "(Total omitido por espacio)"; // Intentar no sobrescribir la pausa
+        gotoxy(5, y++); cout << "--(Pasajeros no mostrados)--";
     }
-
-    gotoxy(3, 28); cout << "Presione una tecla para continuar...";
-    getch(); // Pausa la pantalla hasta que se presione una tecla
-    
+    y++
+    gotoxy(3, y++); cout << "Presione una tecla para continuar...";
+    y++;
+    getch();
 }//Fin de la funcion Mostrar Reserva
 
 
@@ -572,20 +562,20 @@ void consultar() {
         gotoxy(40, 10); cout << "0. Volver al Menu Principal";
         gotoxy(40, 13); cout << "SELECCIONE UNA OPCION: ";
         cin >> opcion_consulta;
-        fflush(stdin); // Limpia el buffer de entrada, como en tu código original
+        fflush(stdin); // Limpia el buffer de entrada, como en tu cÃ³digo original
 
         switch (opcion_consulta) {
-            case 1: { // Buscar por Número de Reserva
+            case 1: { // Buscar por NÃºmero de Reserva
                 system("CLS"); 
                 marco();
                 gotoxy(35, 3); cout << "BUSCAR RESERVA POR NUMERO";
                 gotoxy(3, 6); cout << "Ingrese el numero de reserva a buscar: ";
                 gets(num_busqueda); 
 
-                Reserva reserva_encontrada; // Variable para la función buscarReserva
+                Reserva reserva_encontrada; // Variable para la funciÃ³n buscarReserva
                 if (buscarReserva(num_busqueda, reserva_encontrada) == 1) {
                 	
-                    // Si se encuentra, llama a la función para mostrarla.
+                    // Si se encuentra, llama a la funciÃ³n para mostrarla.
                     // mostrarReserva se encarga de limpiar pantalla, dibujar marco y pausar.
                     
                     mostrarReserva(reserva_encontrada);
@@ -620,16 +610,16 @@ void consultar() {
                         alguna_encontrada = true;
                         mostrarReserva(reserva_leida); // Muestra y pausa
                         
-                        // Después de presionar una tecla, el bucle continuará buscando más coincidencias.
-                        // La pantalla se limpiará en la próxima llamada a mostrarReserva si hay otra.
+                        // DespuÃ©s de presionar una tecla, el bucle continuarÃ¡ buscando mÃ¡s coincidencias.
+                        // La pantalla se limpiarÃ¡ en la prÃ³xima llamada a mostrarReserva si hay otra.
                     }
                 }
                 fclose(archivo_cruceros); // Cerrar el archivo
 
                 if (!alguna_encontrada) {
-                    // Si no se encontró ninguna, mostrar mensaje.
-                    // La pantalla ya estaría limpia por el system("CLS") inicial de este case.
-                    // O si hubo llamadas a mostrarReservaSimple, la última limpió.
+                    // Si no se encontrÃ³ ninguna, mostrar mensaje.
+                    // La pantalla ya estarÃ­a limpia por el system("CLS") inicial de este case.
+                    // O si hubo llamadas a mostrarReservaSimple, la Ãºltima limpiÃ³.
                     // Para asegurar, limpiamos y mostramos.
                     system("CLS");
                     marco();
@@ -637,7 +627,7 @@ void consultar() {
                     gotoxy(3, 12); cout << "Presione una tecla para continuar...";
                     getch();
                 } else {
-                    // Si se encontraron una o más, después de la última pausa de mostrarReserva,
+                    // Si se encontraron una o mÃ¡s, despuÃ©s de la Ãºltima pausa de mostrarReserva,
                     // podemos mostrar un mensaje final.
                     system("CLS");
                     marco();
@@ -648,7 +638,7 @@ void consultar() {
                 break;
             }
             case 0:
-                // Opción para salir del submenú de consulta
+                // OpciÃ³n para salir del submenÃº de consulta
                 break;
             default:
                 gotoxy(40, 15); cout << "Opcion no valida. Presione una tecla para intentar de nuevo...";
