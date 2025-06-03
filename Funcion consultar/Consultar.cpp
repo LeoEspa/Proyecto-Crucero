@@ -490,8 +490,8 @@ void incluir(){
 
 
 void mostrarReserva(Reserva res) {
-    system("CLS"); // Limpia la pantalla
-    marco();       // Dibuja el marco
+    system("CLS");
+    marco();
     int y = 3;
 
     gotoxy(35, y++); cout << "--- DETALLES DE LA RESERVA ---";
@@ -524,26 +524,48 @@ void mostrarReserva(Reserva res) {
     
     // NUEVO: Preguntar al usuario si quiere ver los pasajeros
     char respuesta;
-    gotoxy(5, y++); cout << "--¿Desea ver la lista de pasajeros? (S/N): ";y++;
-    respuesta = getch(); // Lee una tecla sin enter
+    gotoxy(3, y++); cout << "¿Desea ver la lista de pasajeros? (S/N): ";
+    respuesta = getch();
 
     if (respuesta == 'S' || respuesta == 's') {
-        gotoxy(3, y++); cout << "-- Pasajeros (" << res.num_pasajeros << ") --";y++;
-        for (int i = 0; i < res.num_pasajeros; i++) {
-            gotoxy(5, y++); cout << "  P" << i + 1 << ": " << res.pasajeros[i].nombre 
-                                 << " (Edad: " << res.pasajeros[i].edad 
-                                 << ", Genero: " << res.pasajeros[i].genero
-                                 << ", Camarote: " << res.pasajeros[i].tipo_camarote 
-                                 << ", EUR " << res.pasajeros[i].precio_pasaje << ")";
+        gotoxy(3, y++); cout << "-- Pasajeros (" << res.num_pasajeros << ") --";
+        int i = 0;
+        while (i < res.num_pasajeros) {
+            // Calcula dinámicamente el espacio disponible para esta página
+            const int ALTO_MARCO = 29;
+            const int lineasPie = 2; // dejar espacio para el mensaje y el marco
+            int lineasDisponibles = ALTO_MARCO - y - lineasPie + 1; // +1 porque el marco cuenta desde 1
+
+            int mostradosEnEstaPagina = 0;
+            while (mostradosEnEstaPagina < lineasDisponibles && i < res.num_pasajeros) {
+                gotoxy(5, y++); cout << "  P" << i + 1 << ":";
+                gotoxy(7, y++); cout << "Nombre: " << res.pasajeros[i].nombre;
+                gotoxy(7, y++); cout << "Edad: " << res.pasajeros[i].edad;
+                gotoxy(7, y++); cout << "Género: " << res.pasajeros[i].genero;
+                gotoxy(7, y++); cout << "Camarote: " << res.pasajeros[i].tipo_camarote;
+                gotoxy(7, y++); cout << "Precio: EUR " << res.pasajeros[i].precio_pasaje;
+                y++; // Línea en blanco entre pasajeros
+                i++;
+                mostradosEnEstaPagina++;
+            }
+            // Si hay más pasajeros por mostrar, pausa la pantalla
+            if (i < res.num_pasajeros) {
+                gotoxy(3, ALTO_MARCO - 1); // justo antes de la línea inferior del marco
+                cout << "Presione una tecla para ver más...";
+                getch();
+                system("CLS");
+                marco();
+                y = 3;
+                gotoxy(3, y++); cout << "-- Pasajeros (continuación) --";
+            }
         }
     } else {
-        gotoxy(5, y++); cout << "--(Pasajeros no mostrados)--";
+        gotoxy(3, y++); cout << "(Pasajeros no mostrados)";
     }
-    y++
-    gotoxy(3, y++); cout << "Presione una tecla para continuar...";
     y++;
+    gotoxy(3, y++); cout << "Presione una tecla para continuar...";
     getch();
-}//Fin de la funcion Mostrar Reserva
+}// Fin de la funcion mostrarReserva
 
 
 void consultar() {
