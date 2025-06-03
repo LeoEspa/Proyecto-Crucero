@@ -88,7 +88,7 @@ int main() {
         switch(op) {
             case 1: incluir(); break;
             case 2: consultar(); break;
-            // case 3: modificar(); break;
+            case 3: modificarReserva(); break;
             // case 4: eliminar(); break;
             // case 5: cancelarReactivar(); break;
             // case 6: reportes(); break;
@@ -260,11 +260,11 @@ void mostrar(int pos1, int pos2, int desde, int hasta, Reserva nueva){
 		case 1: cout << "Nombre del solicitante: " << nueva.soli.nombre; break;
 		case 2: cout << "Pasaporte: " << nueva.soli.pasaporte; break;
 		case 3: cout << "Edad: " << nueva.soli.edad; break;
-		case 4: cout << "G?nero (M/F) : " << nueva.soli.genero; break;
+		case 4: cout << "Genero (M/F) : " << nueva.soli.genero; break;
 		case 5: cout << "El solicitante viaja?: "<< nueva.soli.viaja; break;
 		case 6: cout << "Puerto de salida: " << nueva.puerto_salida; break;
 		case 7: cout << "Destino: " << nueva.destino; break;
-		case 8: cout << "C?digo de viaje: " << nueva.codigo_viaje; break;
+		case 8: cout << "Codigo de viaje: " << nueva.codigo_viaje; break;
 		case 9: cout << "Categoria de cabina: " << nueva.categoria_cabina; break;
 		case 10: cout << "Mes de salida: " <<  nueva.fecha_salida.mes; break;
 		case 11: cout << "Dia de salida: " <<  nueva.fecha_salida.dia; break;
@@ -525,14 +525,14 @@ void mostrarReserva(Reserva res) {
     
     // NUEVO: Preguntar al usuario si quiere ver los pasajeros
     char respuesta;
-    gotoxy(3, y++); cout << "¿Desea ver la lista de pasajeros? (S/N): ";
+    gotoxy(3, y++); cout << "Â¿Desea ver la lista de pasajeros? (S/N): ";
     respuesta = getch();
 
     if (respuesta == 'S' || respuesta == 's') {
         gotoxy(3, y++); cout << "-- Pasajeros (" << res.num_pasajeros << ") --";
         int i = 0;
         while (i < res.num_pasajeros) {
-            // Calcula dinámicamente el espacio disponible para esta página
+            // Calcula dinÃ¡micamente el espacio disponible para esta pÃ¡gina
             const int ALTO_MARCO = 29;
             const int lineasPie = 2; // dejar espacio para el mensaje y el marco
             int lineasDisponibles = ALTO_MARCO - y - lineasPie + 1; // +1 porque el marco cuenta desde 1
@@ -542,22 +542,22 @@ void mostrarReserva(Reserva res) {
                 gotoxy(5, y++); cout << "  P" << i + 1 << ":";
                 gotoxy(7, y++); cout << "Nombre: " << res.pasajeros[i].nombre;
                 gotoxy(7, y++); cout << "Edad: " << res.pasajeros[i].edad;
-                gotoxy(7, y++); cout << "Género: " << res.pasajeros[i].genero;
+                gotoxy(7, y++); cout << "GÃ©nero: " << res.pasajeros[i].genero;
                 gotoxy(7, y++); cout << "Camarote: " << res.pasajeros[i].tipo_camarote;
                 gotoxy(7, y++); cout << "Precio: EUR " << res.pasajeros[i].precio_pasaje;
-                y++; // Línea en blanco entre pasajeros
+                y++; // LÃ­nea en blanco entre pasajeros
                 i++;
                 mostradosEnEstaPagina++;
             }
-            // Si hay más pasajeros por mostrar, pausa la pantalla
+            // Si hay mÃ¡s pasajeros por mostrar, pausa la pantalla
             if (i < res.num_pasajeros) {
-                gotoxy(3, ALTO_MARCO - 1); // justo antes de la línea inferior del marco
-                cout << "Presione una tecla para ver más...";
+                gotoxy(3, ALTO_MARCO - 1); // justo antes de la lÃ­nea inferior del marco
+                cout << "Presione una tecla para ver mÃ¡s...";
                 getch();
                 system("CLS");
                 marco();
                 y = 3;
-                gotoxy(3, y++); cout << "-- Pasajeros (continuación) --";
+                gotoxy(3, y++); cout << "-- Pasajeros (continuaciÃ³n) --";
             }
         }
     } else {
@@ -586,20 +586,20 @@ void consultar() {
         gotoxy(40, 10); cout << "0. Volver al Menu Principal";
         gotoxy(40, 13); cout << "SELECCIONE UNA OPCION: ";
         cin >> opcion_consulta;
-        fflush(stdin); // Limpia el buffer de entrada, como en tu código original
+        fflush(stdin); // Limpia el buffer de entrada, como en tu cÃ³digo original
 
         switch (opcion_consulta) {
-            case 1: { // Buscar por Número de Reserva
+            case 1: { // Buscar por NÃºmero de Reserva
                 system("CLS"); 
                 marco();
                 gotoxy(35, 3); cout << "BUSCAR RESERVA POR NUMERO";
                 gotoxy(3, 6); cout << "Ingrese el numero de reserva a buscar: ";
                 gets(num_busqueda); 
 
-                Reserva reserva_encontrada; // Variable para la función buscarReserva
+                Reserva reserva_encontrada; // Variable para la funciÃ³n buscarReserva
                 if (buscarReserva(num_busqueda, reserva_encontrada) == 1) {
                 	
-                    // Si se encuentra, llama a la función para mostrarla.
+                    // Si se encuentra, llama a la funciÃ³n para mostrarla.
                     // mostrarReserva se encarga de limpiar pantalla, dibujar marco y pausar.
                     
                     mostrarReserva(reserva_encontrada);
@@ -634,16 +634,16 @@ void consultar() {
                         alguna_encontrada = true;
                         mostrarReserva(reserva_leida); // Muestra y pausa
                         
-                        // Después de presionar una tecla, el bucle continuará buscando más coincidencias.
-                        // La pantalla se limpiará en la próxima llamada a mostrarReserva si hay otra.
+                        // DespuÃ©s de presionar una tecla, el bucle continuarÃ¡ buscando mÃ¡s coincidencias.
+                        // La pantalla se limpiarÃ¡ en la prÃ³xima llamada a mostrarReserva si hay otra.
                     }
                 }
                 fclose(archivo_cruceros); // Cerrar el archivo
 
                 if (!alguna_encontrada) {
-                    // Si no se encontró ninguna, mostrar mensaje.
-                    // La pantalla ya estaría limpia por el system("CLS") inicial de este case.
-                    // O si hubo llamadas a mostrarReservaSimple, la última limpió.
+                    // Si no se encontrÃ³ ninguna, mostrar mensaje.
+                    // La pantalla ya estarÃ­a limpia por el system("CLS") inicial de este case.
+                    // O si hubo llamadas a mostrarReservaSimple, la Ãºltima limpiÃ³.
                     // Para asegurar, limpiamos y mostramos.
                     system("CLS");
                     marco();
@@ -651,7 +651,7 @@ void consultar() {
                     gotoxy(3, 12); cout << "Presione una tecla para continuar...";
                     getch();
                 } else {
-                    // Si se encontraron una o más, después de la última pausa de mostrarReserva,
+                    // Si se encontraron una o mÃ¡s, despuÃ©s de la Ãºltima pausa de mostrarReserva,
                     // podemos mostrar un mensaje final.
                     system("CLS");
                     marco();
@@ -662,7 +662,7 @@ void consultar() {
                 break;
             }
             case 0:
-                // Opción para salir del submenú de consulta
+                // OpciÃ³n para salir del submenÃº de consulta
                 break;
             default:
                 gotoxy(40, 15); cout << "Opcion no valida. Presione una tecla para intentar de nuevo...";
@@ -674,7 +674,9 @@ void consultar() {
 }//Fin de la Funcion consultar
 
 void modificarReserva() {
-	
+	system("CLS");
+        marco();
+        
     FILE *fOriginal = fopen("CRUCERO.dat", "rb");
     FILE *fTemp = fopen("CRUCERO_temp.dat", "wb");
     if (!fOriginal || !fTemp) {
@@ -684,7 +686,7 @@ void modificarReserva() {
         return;
     }
 
-    int nroReservaBuscada;
+    char nroReservaBuscada[20];
     bool encontrado = false;
 
     cout << "Ingrese el numero de reserva a modificar: ";
@@ -698,9 +700,9 @@ void modificarReserva() {
             mostrarReserva(res); // Debe mostrar la reserva actual
             cout << "Ingrese los nuevos datos de la reserva:" << endl;
             
-            //IMPORTANTE//Esta es una función a futuro
+            //IMPORTANTE//Esta es una funciÃ³n a futuro
         
-            modificarDatosReserva(res); // Aquí pides al usuario los nuevos datos o solo los campos a modificar
+            modificarDatosReserva(res); // AquÃ­ pides al usuario los nuevos datos o solo los campos a modificar
             
             
             
@@ -719,9 +721,8 @@ void modificarReserva() {
         cout << "Reserva modificada exitosamente." << endl;
     } else {
         remove("CRUCERO_temp.dat");
-        cout << "No se encontró una reserva con ese numero." << endl;
+        cout << "No se encontrÃ³ una reserva con ese numero." << endl;
     }
 }//Fin de la Funcion Modificar Reserva
-
 
 
