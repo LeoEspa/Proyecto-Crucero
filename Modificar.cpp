@@ -677,8 +677,8 @@ void modificarReserva() {
 	system("CLS");
         marco();
         
-    FILE *fOriginal = fopen("CRUCERO.dat", "rb");
-    FILE *fTemp = fopen("CRUCERO_temp.dat", "wb");
+    FILE *fOriginal = fopen("CRUCEROS.dat", "rb");
+    FILE *fTemp = fopen("CRUCEROS_temp.dat", "wb");
     if (!fOriginal || !fTemp) {
         cout << "Error abriendo archivos." << endl;
         if (fOriginal) fclose(fOriginal);
@@ -689,13 +689,15 @@ void modificarReserva() {
     char nroReservaBuscada[20];
     bool encontrado = false;
 
-    cout << "Ingrese el numero de reserva a modificar: ";
-    cin >> nroReservaBuscada;
+ gotoxy(10, 3); cout << "Ingrese el numero de reserva a modificar: ";
+  cin.ignore();
+  cin.getline(nroReservaBuscada, 20);
+
 
     Reserva res;
     while (fread(&res, sizeof(Reserva), 1, fOriginal)) {
     	
-        if (res.numero_reserva == nroReservaBuscada) {
+        if (strcmp(res.numero_reserva, nroReservaBuscada) == 0) {
             cout << "Reserva encontrada. Datos actuales:" << endl;
             mostrarReserva(res); // Debe mostrar la reserva actual
             cout << "Ingrese los nuevos datos de la reserva:" << endl;
@@ -716,11 +718,11 @@ void modificarReserva() {
     fclose(fTemp);
 
     if (encontrado) {
-        remove("CRUCERO.dat");
-        rename("CRUCERO_temp.dat", "CRUCERO.dat");
+        remove("CRUCEROS.dat");
+        rename("CRUCEROS_temp.dat", "CRUCEROS.dat");
         cout << "Reserva modificada exitosamente." << endl;
     } else {
-        remove("CRUCERO_temp.dat");
+        remove("CRUCEROS_temp.dat");
         cout << "No se encontró una reserva con ese numero." << endl;
     }
 }//Fin de la Funcion Modificar Reserva
