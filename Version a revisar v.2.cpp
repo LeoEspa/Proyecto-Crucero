@@ -75,6 +75,7 @@ void mostrarReservaSimple(Reserva r);
 void mostrar2(int pos1, int pos2, int desde, int hasta, Fecha fecha);
 void reporteViajesTemporada();
 // Funcion principal
+
 int main() {
     setlocale(LC_ALL, "spanish");
     int op;
