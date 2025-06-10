@@ -685,14 +685,14 @@ void mostrarReserva(Reserva res) {
     gotoxy(5, y++); cout << "Estado: " << (res.activa ? "Activa" : "Cancelada");
     y++;
     gotoxy(3, y++); cout << "-- Solicitante --";
-    gotoxy(5, y+++1); cout << "Nombre: " << res.soli.nombre;
+    gotoxy(5, y+=2); cout << "Nombre: " << res.soli.nombre;
     gotoxy(5, y++); cout << "Pasaporte: " << res.soli.pasaporte;
     gotoxy(5, y++); cout << "Edad: " << res.soli.edad;
     gotoxy(5, y++); cout << "Genero: " << res.soli.genero;
     gotoxy(5, y++); cout << "El solicitante viaja?: " << res.soli.viaja;
     y=3;
     gotoxy(60, y++); cout << "-- DETALLES DEL VIAJE --";
-    gotoxy(62, y+++1); cout << "Puerto de Salida: " << res.puerto_salida;
+    gotoxy(62, y+=2); cout << "Puerto de Salida: " << res.puerto_salida;
     gotoxy(62, y++); cout << "Destino: " << res.destino;
     gotoxy(62, y++); cout << "Linea de Crucero: " << res.linea_crucero;
     gotoxy(62, y++); cout << "Codigo de Viaje: " << res.codigo_viaje;
