@@ -73,6 +73,8 @@ void reporteViajesTemporada();
 void mostrarReservaSimple(Reserva r);
 void mostrar2(int pos1, int pos2, int desde, int hasta, Fecha fecha);
 void reporteViajesTemporada();
+void cancelacionesPorEdad();
+void revisionCapacidadCabina();
 // Funcion principal
 
 int main() {
@@ -950,16 +952,16 @@ void reportes() {
 		gotoxy(45, 3); cout << "REPORTES - OCEANO AZUL";
         gotoxy(40, 6); cout << "1. Consulta por Linea de Crucero";
         gotoxy(40, 8); cout << "2. Viajes por Temporada";
-        gotoxy(40, 10); cout << "3. Cancelaciones por Edad (No implementado)";
-        gotoxy(40, 12); cout << "4. Revision de Capacidad (No implementado)";
+        gotoxy(40, 10); cout << "3. Cancelaciones por Edad";
+        gotoxy(40, 12); cout << "4. Revision de Capacidad";
         gotoxy(40, 14); cout << "0. Volver al menu principal";
         op = validar_numero(0,4,"Opcion: ", 40, 17);
 
         switch(op) {
             case 1: reporteLineaCrucero(); break;
             case 2: reporteViajesTemporada(); break;
-            //case 3: reporteCancelacionesEdad(); break;
-            //case 4: reporteCapacidadCabinas(); break;
+            case 3: cancelacionesPorEdad(); break;
+            case 4: revisionCapacidadCabina(); break;
             case 0: return;
         }
 
@@ -1207,3 +1209,55 @@ void reporteViajesTemporada() {
     gotoxy(3, 27); cout << "Presione una tecla para volver...";
     getch();
 }
+
+void cancelacionesPorEdad() {
+    FILE *archivo = fopen("CRUCEROS.dat", "rb");
+    if (!archivo) {
+        cout << "Error al abrir archivo de reservas.";
+        getch(); return;
+    }
+    int menores = 0, adultos = 0, mayores = 0;
+    Reserva r;
+    while (fread(&r, sizeof(Reserva), 1, archivo)) {
+        if (!r.activa) {
+            if (r.soli.edad < 18) menores++;
+            else if (r.soli.edad <= 60) adultos++;
+            else mayores++;
+        }
+    }
+    fclose(archivo);
+    system("cls"); marco();
+    gotoxy(40, 6); cout << "CANCELACIONES POR EDAD";
+    gotoxy(35, 8); cout << "Menores de edad: " << menores;
+    gotoxy(35, 9); cout << "Adultos: " << adultos;
+    gotoxy(35, 10); cout << "Tercera edad: " << mayores;
+    gotoxy(35, 12); cout << "Presione una tecla para continuar...";
+    getch();
+}
+
+void revisionCapacidadCabina() {
+    FILE *archivo = fopen("CRUCEROS.dat", "rb");
+    if (!archivo) {
+        cout << "Error al abrir archivo de reservas.";
+        getch(); return;
+    }
+    int interior = 0, exterior = 0, balcon = 0, suite = 0;
+    Reserva r;
+    while (fread(&r, sizeof(Reserva), 1, archivo)) {
+        if (strcmp(r.categoria_cabina, "Interior") == 0) interior++;
+        else if (strcmp(r.categoria_cabina, "Exterior") == 0) exterior++;
+        else if (strcmp(r.categoria_cabina, "Balcon") == 0 || strcmp(r.categoria_cabina, "Balcón") == 0) balcon++;
+        else if (strcmp(r.categoria_cabina, "Suite") == 0) suite++;
+    }
+    fclose(archivo);
+    system("cls"); marco();
+    gotoxy(40, 6); cout << "REVISION DE CAPACIDAD DE CABINA";
+    gotoxy(35, 8); cout << "Interior: " << interior;
+    gotoxy(35, 9); cout << "Exterior: " << exterior;
+    gotoxy(35, 10); cout << "Balcón: " << balcon;
+    gotoxy(35, 11); cout << "Suite: " << suite;
+    gotoxy(35, 13); cout << "Presione una tecla para continuar...";
+    getch();
+}
+
+
