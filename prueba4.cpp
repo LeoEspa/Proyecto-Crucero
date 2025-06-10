@@ -167,19 +167,19 @@ void pantallaCargaSimple() {
     int max_x = 118 - barco_ancho;
     int pos_x = 5;
 
-    // Olas m�s detalladas
+    // Olas más detalladas
     const char* ola[] = {"~~", "_\\_", "~/~"};
 
     gotoxy(45, 8); cout << "C A R G A N D O   S I S T E M A";
 
-    // Dibujar olas est�ticas
+    // Dibujar olas estáticas
     for (int x = 5; x < 115; x += 4) {
         gotoxy(x, 20); cout << ola[0];
         gotoxy(x, 21); cout << ola[1];
         gotoxy(x+2, 22); cout << ola[2];
     }
 
-    // Animaci�n de un solo recorrido
+    // Animación de un solo recorrido
     for (pos_x = 5; pos_x < max_x; pos_x += 3) {
         // Dibujar barco
         for (int y = 0; y < barco_alto; y++) {
@@ -207,7 +207,7 @@ void pantallaCargaSimple() {
             }
         }
 
-        Sleep(100); // Velocidad de animaci�n (ajustable)
+        Sleep(100); // Velocidad de animación (ajustable)
 
         // Borrar barco para el siguiente frame
         for (int y = 0; y < barco_alto; y++) {
@@ -521,7 +521,7 @@ void incluir(){
 		marco();
 		gotoxy(40, 12); cout << "INGRESANDO INFORMACION DE PASAJEROS....";
 		bool solicitanteViaja = (strcmp(nueva.soli.viaja, "Si") == 0);
-	int maxPasajeros = 4; // M�ximo de pasajeros permitidos
+	int maxPasajeros = 4; // Máximo de pasajeros permitidos
 	int pasajerosAdicionales = 0;
 
 if (solicitanteViaja) {
@@ -534,7 +534,7 @@ if (solicitanteViaja) {
     nueva.pasajeros[0].edad = nueva.soli.edad;
     strcpy(nueva.pasajeros[0].genero, nueva.soli.genero);
 
-    // Mostrar y completar datos espec�ficos del pasajero (solicitante)
+    // Mostrar y completar datos específicos del pasajero (solicitante)
     system("CLS");
     marco();
     mostrar_pasajeros(3, 6, 1, 3, nueva, 0);
@@ -837,6 +837,7 @@ void modificarReserva() {
 
     char nroReservaBuscada[20];
     bool encontrado = false;
+    bool cambios = false;
 
     gotoxy(10, 3); cout << "INGRESA EL NUMERO DE RESERVA A MODIFICAR: ";
     cin.ignore();
@@ -844,29 +845,190 @@ void modificarReserva() {
 
     Reserva res;
     while (fread(&res, sizeof(Reserva), 1, fOriginal)) {
+        bool reservaModificada = false; // Variable para cada reserva
+
         if (strcmp(res.numero_reserva, nroReservaBuscada) == 0) {
             encontrado = true;
-            gotoxy(10, 5); cout << "Reserva encontrada. Mostrando datos actuales...";
+            gotoxy(10, 5); cout << "RESERVA ENCONTRADA. MOSTRANDO DATOS ACTUALES...";
             getch();
-            mostrarReserva(res);
-            gotoxy(10, 26); cout << "La funcionalidad para editar no esta implementada. No se hicieron cambios.";
+            mostrarReserva(res); // Muestras la reserva antes de modificar
+
+            int opcion_modificar;
+            do {
+                system("CLS");
+                marco();
+                gotoxy(30, 3); cout << "MODIFICAR RESERVA: " << res.numero_reserva;
+                gotoxy(30, 5); cout << "Seleccione la sección a modificar:";
+                gotoxy(35, 7); cout << "1. Datos del Solicitante";
+                gotoxy(35, 8); cout << "2. Datos del Viaje";
+                gotoxy(35, 9); cout << "3. Fechas y Horarios";
+                gotoxy(35,10); cout << "4. Pasajeros";
+                gotoxy(35,11); cout << "5. Estado de la Reserva (Activa/Cancelada)";
+                gotoxy(35,12); cout << "0. Guardar y salir";
+                gotoxy(35,14); cout << "Opcion: ";
+                opcion_modificar = validar_numero(0, 5, "", 45, 14);
+
+                switch(opcion_modificar) {
+                    case 1: {
+                        // MODIFICAR DATOS DEL SOLICITANTE
+                        system("CLS");
+                        marco();
+                        gotoxy(3,6); cout << "Nombre del solicitante: ";
+                        cin.ignore();
+                        cin.getline(res.soli.nombre, sizeof(res.soli.nombre));
+                        gotoxy(3, 7); cout << "Pasaporte: ";
+                        cin.getline(res.soli.pasaporte, sizeof(res.soli.pasaporte));
+                        res.soli.edad = validar_numero(1,100,"Edad (1-100): ",3,8);
+                        char temp = validar_dosletras("Genero (M/F): ",3,9,"M","F","m","f");
+                        strcpy(res.soli.genero, (temp=='m'||temp=='M') ? "Masculino" : "Femenino");
+                        gotoxy(3,10); cout << "El solicitante viaja? <1>Si <2>No: ";
+                        int viaja = validar_numero(1,2,"Opcion: ",3,11);
+                        strcpy(res.soli.viaja, viaja==1 ? "Si" : "No");
+                        reservaModificada = true;
+                        break;
+                    }
+                    case 2: {
+                        // MODIFICAR DATOS DEL VIAJE
+                        system("CLS");
+                        marco();
+                        gotoxy(3,6); cout << "Puerto de salida: ";
+                        cin.ignore();
+                        cin.getline(res.puerto_salida, sizeof(res.puerto_salida));
+                        gotoxy(3,7); cout << "Destino: ";
+                        cin.getline(res.destino, sizeof(res.destino));
+                        gotoxy(3,8); cout << "Linea de crucero: ";
+                        cin.getline(res.linea_crucero, sizeof(res.linea_crucero));
+                        gotoxy(3,9); cout << "Codigo de viaje: ";
+                        cin.getline(res.codigo_viaje, sizeof(res.codigo_viaje));
+                        gotoxy(3,10); cout << "Categoria de cabina: ";
+                        gotoxy(3,11); cout << "<1> Interior <2> Exterior <3> Balcon <4> Suite";
+                        int op = validar_numero(1,4,"Opcion: ",3,12);
+                        switch(op) {
+                            case 1: strcpy(res.categoria_cabina, "Interior"); break;
+                            case 2: strcpy(res.categoria_cabina, "Exterior"); break;
+                            case 3: strcpy(res.categoria_cabina, "Balcon"); break;
+                            case 4: strcpy(res.categoria_cabina, "Suite"); break;
+                        }
+                        reservaModificada = true;
+                        break;
+                    }
+                    case 3: {
+                        // MODIFICAR FECHAS Y HORARIOS
+                        system("CLS");
+                        marco();
+                        gotoxy(3,6); cout << "Mes de salida (1-12): ";
+                        res.fecha_salida.mes = validar_numero(1,12,"Mes de salida: ",3,6);
+                        int maxdia = 31;
+                        if(res.fecha_salida.mes==4 || res.fecha_salida.mes==6 || res.fecha_salida.mes==9 || res.fecha_salida.mes==11) maxdia=30;
+                        gotoxy(3,7); cout << "Dia de salida (1-" << maxdia << "): ";
+                        res.fecha_salida.dia = validar_numero(1,maxdia,"Dia de salida: ",3,7);
+                        gotoxy(3,8); cout << "Año de salida (2025-2100): ";
+                        res.fecha_salida.anio = validar_numero(2025,2100,"Año de salida: ",3,8);
+                        gotoxy(3,9); cout << "Hora de embarque (0-23): ";
+                        res.embarque.hora = validar_numero(0,23,"Hora embarque: ",3,9);
+                        gotoxy(3,10); cout << "Minuto de embarque (0-59): ";
+                        res.embarque.minuto = validar_numero(0,59,"Minutos embarque: ",3,10);
+
+                        gotoxy(3,11); cout << "Mes de reserva (1-12): ";
+                        res.fecha_reserva.mes = validar_numero(1,12,"Mes reserva: ",3,11);
+                        maxdia = (res.fecha_reserva.mes==4 || res.fecha_reserva.mes==6 || res.fecha_reserva.mes==9 || res.fecha_reserva.mes==11)?30:31;
+                        gotoxy(3,12); cout << "Dia de reserva (1-" << maxdia << "): ";
+                        res.fecha_reserva.dia = validar_numero(1,maxdia,"Dia reserva: ",3,12);
+                        gotoxy(3,13); cout << "Año de reserva (2025-2100): ";
+                        res.fecha_reserva.anio = validar_numero(2025,2100,"Año reserva: ",3,13);
+                        reservaModificada = true;
+                        break;
+                    }
+                    case 4: {
+                        // MODIFICAR PASAJEROS
+                        system("CLS");
+                        marco();
+                        gotoxy(3,6); cout << "Modificar pasajeros.";
+                        gotoxy(3,7); cout << "Cantidad actual: " << res.num_pasajeros;
+                        gotoxy(3,8); cout << "Desea cambiar la cantidad de pasajeros? <1>Si <2>No";
+                        int cambiar = validar_numero(1,2,"Opcion: ",3,9);
+                        int maxPasajeros = 4;
+                        if (cambiar==1) {
+                            gotoxy(3,10); cout << "Nueva cantidad de pasajeros (1-4): ";
+                            res.num_pasajeros = validar_numero(1,4,"Num pasajeros: ",3,10);
+                        }
+                        for (int i=0; i<res.num_pasajeros; i++) {
+                            gotoxy(3,12+i*6); cout << "Pasajero " << (i+1);
+                            gotoxy(5,13+i*6); cout << "Nombre: ";
+                            cin.ignore();
+                            cin.getline(res.pasajeros[i].nombre, sizeof(res.pasajeros[i].nombre));
+                            res.pasajeros[i].edad = validar_numero(1,100,"Edad (1-100): ",5,14+i*6);
+                            char g = validar_dosletras("Genero (M/F): ",5,15+i*6,"M","F","m","f");
+                            strcpy(res.pasajeros[i].genero,(g=='M'||g=='m') ? "Masculino":"Femenino");
+                            gotoxy(5,16+i*6); cout << "Tipo de camarote: ";
+                            cin.getline(res.pasajeros[i].tipo_camarote, sizeof(res.pasajeros[i].tipo_camarote));
+                            res.pasajeros[i].precio_pasaje = validar_float(1,10000,"Precio (EUR): ",5,17+i*6);
+                        }
+                        // Recalcular precio total
+                        res.precio_total = 0;
+                        for (int i=0; i<res.num_pasajeros; i++) res.precio_total += res.pasajeros[i].precio_pasaje;
+                        reservaModificada = true;
+                        break;
+                    }
+                    case 5: {
+                        // MODIFICAR ESTADO DE LA RESERVA
+                        system("CLS");
+                        marco();
+                        gotoxy(10,5); cout << "Estado actual: " << (res.activa ? "Activa" : "Cancelada");
+                        gotoxy(10,7); cout << "Cambiar estado? 1-Si 2-No: ";
+                        int op = validar_numero(1,2,"Opcion: ",10,8);
+                        if (op==1) res.activa = !res.activa;
+                        reservaModificada = true;
+                        break;
+                    }
+                    case 0: {
+                        // GUARDAR Y SALIR
+                        break;
+                    }
+                    default: {
+                        gotoxy(35, 16); cout << "OPCION NO VALIDA. INTENTE DE NUEVO.";
+                        getch();
+                        break;
+                    }
+                }
+            } while (opcion_modificar != 0);
+
+            if (reservaModificada) {
+                cambios = true; // Hubo cambios en alguna reserva
+            }
         }
-        fwrite(&res, sizeof(Reserva), 1, fTemp);
+
+        // Guardar en temporal: solo guardar modificado si es la reserva que cambió,
+        // y si hubo cambios, y si no, guardar como estaba
+        if (encontrado && strcmp(res.numero_reserva, nroReservaBuscada) == 0) {
+            if (cambios) {
+                fwrite(&res, sizeof(Reserva), 1, fTemp);
+            } else {
+                // Si no hubo cambios, guarda la original (opcional, aquí igual que el actual)
+                fwrite(&res, sizeof(Reserva), 1, fTemp);
+            }
+        } else {
+            fwrite(&res, sizeof(Reserva), 1, fTemp);
+        }
     }
 
     fclose(fOriginal);
     fclose(fTemp);
 
-    if (encontrado) {
+    if (encontrado && cambios) {
         remove("CRUCEROS.dat");
         rename("CRUCEROS_temp.dat", "CRUCEROS.dat");
         gotoxy(10, 27); cout << "PROCESO DE MODIFICACION FINALIZADO.";
+    } else if (encontrado && !cambios) {
+        remove("CRUCEROS_temp.dat");
+        gotoxy(10, 27); cout << "NO HUBO CAMBIOS EN LA RESERVA.";
     } else {
         remove("CRUCEROS_temp.dat");
         gotoxy(10, 5); cout << "NO SE ENCONTRO RESERVA CON ESE NUMERO.";
     }
     getch();
-}
+    
+}//Fin de la Funcion Modificar
 
 
 void eliminarReserva() {
@@ -1317,7 +1479,7 @@ void revisionCapacidadCabina() {
     while (fread(&r, sizeof(Reserva), 1, archivo)) {
         if (strcmp(r.categoria_cabina, "Interior") == 0) interior++;
         else if (strcmp(r.categoria_cabina, "Exterior") == 0) exterior++;
-        else if (strcmp(r.categoria_cabina, "Balcon") == 0 || strcmp(r.categoria_cabina, "Balc�n") == 0) balcon++;
+        else if (strcmp(r.categoria_cabina, "Balcon") == 0 || strcmp(r.categoria_cabina, "Balcón") == 0) balcon++;
         else if (strcmp(r.categoria_cabina, "Suite") == 0) suite++;
     }
     fclose(archivo);
@@ -1325,7 +1487,7 @@ void revisionCapacidadCabina() {
     gotoxy(40, 6); cout << "REVISION DE CAPACIDAD DE CABINA";
     gotoxy(35, 8); cout << "Interior: " << interior;
     gotoxy(35, 9); cout << "Exterior: " << exterior;
-    gotoxy(35, 10); cout << "Balc�n: " << balcon;
+    gotoxy(35, 10); cout << "Balcón: " << balcon;
     gotoxy(35, 11); cout << "Suite: " << suite;
     gotoxy(35, 13); cout << "Presione una tecla para continuar...";
     getch();
