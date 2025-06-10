@@ -1443,53 +1443,149 @@ void reporteViajesTemporada() {
 
 //Funciones de Fort
 
-void cancelacionesPorEdad() {
-    FILE *archivo = fopen("CRUCEROS.dat", "rb");
+void CancelacionesPorEdadDestino() {
+    FILE* archivo = fopen("CRUCEROS.dat", "rb");
     if (!archivo) {
-        cout << "Error al abrir archivo de reservas.";
+        cout << "\nError al abrir archivo de reservas.";
         getch(); return;
     }
-    int menores = 0, adultos = 0, mayores = 0;
+
+    char destino[50];
+    int edad_min;
+    char filtro[20];
+    char cabinaFiltro[20];
+
+    system("cls"); marco();
+    gotoxy(30, 5); cout << "Destino del crucero: ";
+    fflush(stdin); gets(destino);
+
+    gotoxy(30, 7); cout << "Edad mínima para filtrar: ";
+    cin >> edad_min;
+
+    gotoxy(30, 9); cout << "Desea filtrar por categoria de cabina? (SI/NO): ";
+    fflush(stdin); gets(filtro);
+
+    bool usarFiltro = strcmp(filtro, "SI") == 0 || strcmp(filtro, "si") == 0;
+    if (usarFiltro) {
+        gotoxy(30, 11); cout << "Ingrese categoría (Interior/Exterior/Balcon/Suite): ";
+        fflush(stdin); gets(cabinaFiltro);
+    }
+
+    int y = 13, mostrados = 0;
     Reserva r;
+    system("cls"); marco();
+    gotoxy(30, 3); cout << "CANCELACIONES EN DESTINO: " << destino;
     while (fread(&r, sizeof(Reserva), 1, archivo)) {
-        if (!r.activa) {
-            if (r.soli.edad < 18) menores++;
-            else if (r.soli.edad <= 60) adultos++;
-            else mayores++;
+        if (!r.activa && strcmp(r.destino, destino) == 0) {
+            for (int i = 0; i < r.num_pasajeros; i++) {
+                Pasajero p = r.pasajeros[i];
+                if (p.edad >= edad_min && (!usarFiltro || strcmp(r.categoria_cabina, cabinaFiltro) == 0)) {
+                    gotoxy(10, y++); cout << "Pasajero: " << p.nombre << ", Edad: " << p.edad;
+                    gotoxy(10, y++); cout << "Camarote: " << p.tipo_camarote << ", Precio: " << p.precio << " EUR";
+                    gotoxy(10, y++); cout << "Categoria Cabina: " << r.categoria_cabina << "\n";
+                    y++;
+                    mostrados++;
+                }
+            }
         }
     }
     fclose(archivo);
-    system("cls"); marco();
-    gotoxy(40, 6); cout << "CANCELACIONES POR EDAD";
-    gotoxy(35, 8); cout << "Menores de edad: " << menores;
-    gotoxy(35, 9); cout << "Adultos: " << adultos;
-    gotoxy(35, 10); cout << "Tercera edad: " << mayores;
-    gotoxy(35, 12); cout << "Presione una tecla para continuar...";
+
+    if (mostrados == 0) {
+        gotoxy(10, y++); cout << "\nNo se encontraron pasajeros cancelados con esos criterios.";
+    }
+
+    gotoxy(10, y++); cout << "\nPresione una tecla para continuar...";
     getch();
 }
 
 void revisionCapacidadCabina() {
-    FILE *archivo = fopen("CRUCEROS.dat", "rb");
+    FILE* archivo = fopen("CRUCEROS.dat", "rb");
     if (!archivo) {
         cout << "Error al abrir archivo de reservas.";
         getch(); return;
     }
-    int interior = 0, exterior = 0, balcon = 0, suite = 0;
+
+    char codBuscado[20];
+    int capacidad;
+    char moneda[10];
+    float tasa = 1.0;
+
+    system("cls"); marco();
+    gotoxy(35, 5); cout << "Ingrese codigo del viaje: ";
+    fflush(stdin); gets(codBuscado);
+    gotoxy(35, 6); cout << "Capacidad maxima del viaje: "; cin >> capacidad;
+    gotoxy(35, 7); cout << "Moneda (EUR/USD/BOB): ";
+    fflush(stdin); gets(moneda);
+
+    if (strcmp(moneda, "USD") == 0 || strcmp(moneda, "usd") == 0) {
+        gotoxy(35, 8); cout << "Tasa EUR -> USD: ";
+        cin >> tasa;
+        strcpy(moneda, "USD");
+    } else if (strcmp(moneda, "BOB") == 0 || strcmp(moneda, "bob") == 0) {
+        gotoxy(35, 8); cout << "Tasa EUR -> BOB: ";
+        cin >> tasa;
+        strcpy(moneda, "BOB");
+    } else {
+        tasa = 1.0;
+        strcpy(moneda, "EUR");
+    }
+
+    struct Nodo {
+        Reserva r;
+        float monto;
+    } lista[200];
+
+    int totalPasajeros = 0, total = 0;
     Reserva r;
+
     while (fread(&r, sizeof(Reserva), 1, archivo)) {
-        if (strcmp(r.categoria_cabina, "Interior") == 0) interior++;
-        else if (strcmp(r.categoria_cabina, "Exterior") == 0) exterior++;
-        else if (strcmp(r.categoria_cabina, "Balcon") == 0 || strcmp(r.categoria_cabina, "Balcón") == 0) balcon++;
-        else if (strcmp(r.categoria_cabina, "Suite") == 0) suite++;
+        if (strcmp(r.codigo_viaje, codBuscado) == 0) {
+            lista[total].r = r;
+            lista[total].monto = PrecioTotalReserva(r) * tasa;
+            totalPasajeros += r.num_pasajeros;
+            total++;
+        }
     }
     fclose(archivo);
+
+    // Ordenar por fecha_reserva (simple bubble)
+    for (int i = 0; i < total - 1; i++) {
+        for (int j = i + 1; j < total; j++) {
+            Fecha f1 = lista[i].r.fecha_reserva;
+            Fecha f2 = lista[j].r.fecha_reserva;
+            if (f1.anio > f2.anio || (f1.anio == f2.anio && f1.mes > f2.mes) ||
+                (f1.anio == f2.anio && f1.mes == f2.mes && f1.dia > f2.dia)) {
+                Nodo tmp = lista[i]; lista[i] = lista[j]; lista[j] = tmp;
+            }
+        }
+    }
+
     system("cls"); marco();
-    gotoxy(40, 6); cout << "REVISION DE CAPACIDAD DE CABINA";
-    gotoxy(35, 8); cout << "Interior: " << interior;
-    gotoxy(35, 9); cout << "Exterior: " << exterior;
-    gotoxy(35, 10); cout << "Balcón: " << balcon;
-    gotoxy(35, 11); cout << "Suite: " << suite;
-    gotoxy(35, 13); cout << "Presione una tecla para continuar...";
+    gotoxy(40, 3); cout << "REVISION DE CAPACIDAD - COD: " << codBuscado;
+    int y = 5, acumulados = 0;
+    float excesoMonto = 0;
+
+    for (int i = 0; i < total; i++) {
+        Reserva r = lista[i].r;
+        float monto = lista[i].monto;
+        bool entra = (acumulados + r.num_pasajeros <= capacidad);
+        gotoxy(20, y++); cout << "Reserva #: " << r.numero_reserva << ", Destino: " << r.destino;
+        gotoxy(20, y++); cout << "Pasajeros: " << r.num_pasajeros << ", Monto: " << monto << " " << moneda;
+        gotoxy(20, y++); cout << "Fecha Reserva: " << r.fecha_reserva.dia << "/" << r.fecha_reserva.mes << "/" << r.fecha_reserva.anio;
+        if (!entra) {
+            gotoxy(20, y++); cout << "--> FUERA DE CUPO";
+            excesoMonto += monto;
+        } else {
+            acumulados += r.num_pasajeros;
+        }
+        y++;
+    }
+
+    gotoxy(20, y++); cout << "Pasajeros admitidos: " << acumulados;
+    gotoxy(20, y++); cout << "Pasajeros rechazados: " << totalPasajeros - acumulados;
+    gotoxy(20, y++); cout << "Monto excedente: " << excesoMonto << " " << moneda;
+    gotoxy(20, y++); cout << "Presione una tecla para continuar...";
     getch();
 }
 
