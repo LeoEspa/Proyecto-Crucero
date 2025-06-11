@@ -1481,7 +1481,7 @@ void CancelacionesPorEdadDestino() {
                 Pasajero p = r.pasajeros[i];
                 if (p.edad >= edad_min && (!usarFiltro || strcmp(r.categoria_cabina, cabinaFiltro) == 0)) {
                     gotoxy(10, y++); cout << "Pasajero: " << p.nombre << ", Edad: " << p.edad;
-                    gotoxy(10, y++); cout << "Camarote: " << p.tipo_camarote << ", Precio: " << p.precio << " EUR";
+                    gotoxy(10, y++); cout << "Camarote: " << p.tipo_camarote << ", Precio: " << p.precio_pasaje << " EUR";
                     gotoxy(10, y++); cout << "Categoria Cabina: " << r.categoria_cabina << "\n";
                     y++;
                     mostrados++;
@@ -1543,7 +1543,7 @@ void revisionCapacidadCabina() {
         if (strcmp(r.codigo_viaje, codBuscado) == 0) {
             float monto = 0;
             for (int i = 0; i < r.num_pasajeros; i++) {
-                monto += r.pasajeros[i].precio;
+                monto += r.pasajeros[i].precio_pasaje;
             }
             lista[total].r = r;
             lista[total].monto = monto * tasa;
@@ -1589,8 +1589,7 @@ void revisionCapacidadCabina() {
     gotoxy(20, y++); cout << "Pasajeros admitidos: " << acumulados;
     gotoxy(20, y++); cout << "Pasajeros rechazados: " << totalPasajeros - acumulados;
     gotoxy(20, y++); cout << "Monto excedente: " << excesoMonto << " " << moneda;
-    gotoxy(20, y++); cout << "Presione una tecla para continuar...";
-    getch();
+    gotoxy(20, y++); cout << "Presione una tecla para continuar..."; getch();
 }
 
 
