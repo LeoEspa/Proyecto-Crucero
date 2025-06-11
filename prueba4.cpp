@@ -1541,8 +1541,12 @@ void revisionCapacidadCabina() {
 
     while (fread(&r, sizeof(Reserva), 1, archivo)) {
         if (strcmp(r.codigo_viaje, codBuscado) == 0) {
+            float monto = 0;
+            for (int i = 0; i < r.num_pasajeros; i++) {
+                monto += r.pasajeros[i].precio;
+            }
             lista[total].r = r;
-            lista[total].monto = PrecioTotalReserva(r) * tasa;
+            lista[total].monto = monto * tasa;
             totalPasajeros += r.num_pasajeros;
             total++;
         }
@@ -1586,7 +1590,7 @@ void revisionCapacidadCabina() {
     gotoxy(20, y++); cout << "Pasajeros rechazados: " << totalPasajeros - acumulados;
     gotoxy(20, y++); cout << "Monto excedente: " << excesoMonto << " " << moneda;
     gotoxy(20, y++); cout << "Presione una tecla para continuar...";
-    getch();
+    getch();
 }
 
 
