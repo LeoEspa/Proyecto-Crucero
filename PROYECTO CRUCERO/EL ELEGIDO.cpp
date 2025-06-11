@@ -1451,28 +1451,22 @@ void CancelacionesPorEdadDestino() {
 
     char destino[50];
     int edad_min;
-    char filtro;
+    char filtro[20];
     char cabinaFiltro[20];
-	
+
     system("cls"); marco();
     gotoxy(30, 5); cout << "Destino del crucero: ";
     fflush(stdin); gets(destino);
-    edad_min=validar_numero(0,100,"Edad mínima para filtrar: ",30,7);
 
-    fflush(stdin); filtro= validar_dosletras("Desea filtrar por categoria de cabina? (S/N): ",30,9,"S","N","s","n");
-    bool usarFiltro;
-	
-	if (filtro == 'S' || filtro == 's') usarFiltro=true;
+    gotoxy(30, 7); cout << "Edad mínima para filtrar: ";
+    cin >> edad_min;
+
+    gotoxy(30, 9); cout << "Desea filtrar por categoria de cabina? (SI/NO): ";
+    fflush(stdin); gets(filtro);
+
+    bool usarFiltro = strcmp(filtro, "SI") == 0 || strcmp(filtro, "si") == 0;
     if (usarFiltro) {
-        gotoxy(3,10); cout << "Categoria de cabina: ";
-        gotoxy(3,11); cout << "<1> Interior <2> Exterior <3> Balcon <4> Suite";
-        int op = validar_numero(1,4,"Opcion: ",3,12);
-        switch(op) {
-                            case 1: strcpy(cabinaFiltro, "Interior"); break;
-                            case 2: strcpy(cabinaFiltro, "Exterior"); break;
-                            case 3: strcpy(cabinaFiltro, "Balcon"); break;
-                            case 4: strcpy(cabinaFiltro, "Suite"); break;
-                        }
+        gotoxy(30, 11); cout << "Ingrese categoría (Interior/Exterior/Balcon/Suite): ";
         fflush(stdin); gets(cabinaFiltro);
     }
 
@@ -1486,7 +1480,7 @@ void CancelacionesPorEdadDestino() {
                 Pasajero p = r.pasajeros[i];
                 if (p.edad >= edad_min && (!usarFiltro || strcmp(r.categoria_cabina, cabinaFiltro) == 0)) {
                     gotoxy(10, y++); cout << "Pasajero: " << p.nombre << ", Edad: " << p.edad;
-                    gotoxy(10, y++); cout << "Camarote: " << p.tipo_camarote << ", Precio: " << p.precio_pasaje << " EUR";
+                    gotoxy(10, y++); cout << "Camarote: " << p.tipo_camarote << ", Precio: " << p.precio_pasaje<< " EUR";
                     gotoxy(10, y++); cout << "Categoria Cabina: " << r.categoria_cabina << "\n";
                     y++;
                     mostrados++;
@@ -1519,8 +1513,8 @@ void revisionCapacidadCabina() {
     system("cls"); marco();
     gotoxy(35, 5); cout << "Ingrese codigo del viaje: ";
     fflush(stdin); gets(codBuscado);
-    capicidad=validar_numero(0,1000,"Capacidad maxima del viaje (Maximo 1000): ",35,6);
-    gotoxy(35, 7); cout << "Moneda (EUR/USD/BS): "; //AQUI
+    gotoxy(35, 6); cout << "Capacidad maxima del viaje: "; cin >> capacidad;
+    gotoxy(35, 7); cout << "Moneda (EUR/USD/BOB): ";
     fflush(stdin); gets(moneda);
 
     if (strcmp(moneda, "USD") == 0 || strcmp(moneda, "usd") == 0) {
@@ -1546,8 +1540,12 @@ void revisionCapacidadCabina() {
 
     while (fread(&r, sizeof(Reserva), 1, archivo)) {
         if (strcmp(r.codigo_viaje, codBuscado) == 0) {
+            float monto = 0;
+            for (int i = 0; i < r.num_pasajeros; i++) {
+                monto += r.pasajeros[i].precio_pasaje;
+            }
             lista[total].r = r;
-            lista[total].monto = PrecioTotalReserva(r) * tasa;
+            lista[total].monto = monto * tasa;
             totalPasajeros += r.num_pasajeros;
             total++;
         }
@@ -1590,7 +1588,7 @@ void revisionCapacidadCabina() {
     gotoxy(20, y++); cout << "Pasajeros admitidos: " << acumulados;
     gotoxy(20, y++); cout << "Pasajeros rechazados: " << totalPasajeros - acumulados;
     gotoxy(20, y++); cout << "Monto excedente: " << excesoMonto << " " << moneda;
-    gotoxy(20, y++); cout << "Presione una tecla para continuar...";
-    getch();
+    gotoxy(20, y++); cout << "Presione una tecla para continuar...";getch();
 }
+
 
