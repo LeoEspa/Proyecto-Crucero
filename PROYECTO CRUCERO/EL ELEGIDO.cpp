@@ -431,7 +431,7 @@ void incluir(){
 			else strcpy(nueva.soli.viaja,"No");
 		//Cargar para mostrar informacion completa.
 		mostrar(3,6,1,5,nueva);
-		gotoxy(3,2); cout<< "Numero de reserva: "<<nueva.numero_reserva;
+		gotoxy(3,2); cout<< "Numero de reserva: "<< nueva.numero_reserva;
 		gotoxy(3,12); cout << "INFORMACION DEL SOLICITANTE CARGADA.....";
 		gotoxy(3,13); cout<< "Pulse una tecla para continuar."; getch();
         // Datos del viaje
@@ -449,7 +449,7 @@ void incluir(){
         gotoxy(3,9); cout << "Codigo de viaje: ";
         fflush(stdin);
         gets(nueva.codigo_viaje);
-		gotoxy(3, 10); cout << "Seleccione una opcion de Categoria de cabina:(1-4):"; //PREGUNTAR SI ES POR PASAJERO.
+		gotoxy(3, 10); cout << "Seleccione una opcion de Categoria de cabina:(1-4):"; 
         gotoxy(3, 11); cout << "<1> Interior.";
         gotoxy(3, 12); cout << "<2> Exterior.";
         gotoxy(3, 13); cout << "<3> Balcon.";
@@ -520,11 +520,10 @@ void incluir(){
 		marco();
 		gotoxy(40, 12); cout << "INGRESANDO INFORMACION DE PASAJEROS....";
 		bool solicitanteViaja = (strcmp(nueva.soli.viaja, "Si") == 0);
-	int maxPasajeros = 4; // Máximo de pasajeros permitidos
+	int maxPasajeros = 4; 
 	int pasajerosAdicionales = 0;
 
 if (solicitanteViaja) {
-    // Si el solicitante viaja, puede tener de 0 a 3 pasajeros adicionales (total 1-4)
     pasajerosAdicionales = validar_numero(0, 3, "Numero de pasajeros adicionales (0-3): ", 40, 14);
     nueva.num_pasajeros = pasajerosAdicionales + 1; // +1 por el solicitante
 
@@ -533,13 +532,12 @@ if (solicitanteViaja) {
     nueva.pasajeros[0].edad = nueva.soli.edad;
     strcpy(nueva.pasajeros[0].genero, nueva.soli.genero);
 
-    // Mostrar y completar datos especificos del pasajero (solicitante)
     system("CLS");
     marco();
     mostrar_pasajeros(3, 6, 1, 3, nueva, 0);
     gotoxy(40, 3); cout << "DATOS DEL PASAJERO 1 (SOLICITANTE)";
     
-	gotoxy(3, 9); cout << "Seleccione una opcion de Tipo de camarote:"; //PREGUNTAR SI ES POR PASAJERO.
+	gotoxy(3, 9); cout << "Seleccione una opcion de Tipo de camarote:"; 
         gotoxy(3, 10); cout << "<1> Interior.";
         gotoxy(3, 11); cout << "<2> Exterior.";
         gotoxy(3, 12); cout << "<3> Balcon.";
@@ -581,7 +579,7 @@ if (solicitanteViaja) {
     	marco();
     	mostrar_pasajeros(3, 6, 1, 3, nueva, i);
     	gotoxy(40, 3); cout << "DATOS DEL PASAJERO " << i+1;
-        gotoxy(3, 9); cout << "Seleccione una opcion de Tipo de camarote:"; //PREGUNTAR SI ES POR PASAJERO.
+        gotoxy(3, 9); cout << "Seleccione una opcion de Tipo de camarote:"; 
         gotoxy(3, 10); cout << "<1> Interior.";
         gotoxy(3, 11); cout << "<2> Exterior.";
         gotoxy(3, 12); cout << "<3> Balcon.";
@@ -601,7 +599,6 @@ if (solicitanteViaja) {
         nueva.pasajeros[i].precio_pasaje = validar_float(1, 10000, "Precio pasaje (EUR): ", 3, 10);
     }
 } else {
-    	// Si el solicitante no viaja, puede tener de 1 a 4 pasajeros
     nueva.num_pasajeros = validar_numero(1, 4, "Numero de pasajeros (1-4): ", 40, 14);
 
     	// Cargar todos los pasajeros
@@ -626,7 +623,7 @@ if (solicitanteViaja) {
     	marco();
     	mostrar_pasajeros(3, 6, 1, 3, nueva, i);
         gotoxy(40, 3); cout << "DATOS DEL PASAJERO " << i+1;
-		gotoxy(3, 9); cout << "Seleccione una opcion de Tipo de camarote:"; //PREGUNTAR SI ES POR PASAJERO.
+		gotoxy(3, 9); cout << "Seleccione una opcion de Tipo de camarote:"; 
         gotoxy(3, 10); cout << "<1> Interior.";
         gotoxy(3, 11); cout << "<2> Exterior.";
         gotoxy(3, 12); cout << "<3> Balcon.";
@@ -721,7 +718,7 @@ void mostrarReserva(Reserva res) {
             gotoxy(7, y++); cout << "Genero: " << res.pasajeros[i].genero;
             gotoxy(7, y++); cout << "Camarote: " << res.pasajeros[i].tipo_camarote;
             gotoxy(7, y++); cout << "Precio: EUR " << res.pasajeros[i].precio_pasaje;
-            y++; // L?nea en blanco entre pasajeros
+            y++; // Linea en blanco entre pasajeros
             i++;
         }
     }
@@ -749,7 +746,7 @@ void consultar() {
         fflush(stdin);
 
         switch (opcion_consulta) {
-            case 1: { // Buscar por N?mero de Reserva
+            case 1: { // Buscar por Numero de Reserva
                 system("CLS");
                 marco();
                 gotoxy(35, 3); cout << "BUSCAR RESERVA POR NUMERO";
@@ -1451,7 +1448,7 @@ void CancelacionesPorEdadDestino() {
     int edad_min;
     char filtro;
     char cabinaFiltro[20];
-    bool usarFiltro = false; // Inicializar como false
+    bool usarFiltro = false; 
 
     system("cls"); marco();
     gotoxy(30, 5); cout << "Destino del crucero: ";
