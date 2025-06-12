@@ -167,19 +167,19 @@ void pantallaCargaSimple() {
     int max_x = 118 - barco_ancho;
     int pos_x = 5;
 
-    // Olas mÃ¡s detalladas
+    // Olas mÃƒÂ¡s detalladas
     const char* ola[] = {"~~", "_\\_", "~/~"};
 
     gotoxy(45, 8); cout << "C A R G A N D O   S I S T E M A";
 
-    // Dibujar olas estÃ¡ticas
+    // Dibujar olas estÃƒÂ¡ticas
     for (int x = 5; x < 115; x += 4) {
         gotoxy(x, 20); cout << ola[0];
         gotoxy(x, 21); cout << ola[1];
         gotoxy(x+2, 22); cout << ola[2];
     }
 
-    // AnimaciÃ³n de un solo recorrido
+    // AnimaciÃƒÂ³n de un solo recorrido
     for (pos_x = 5; pos_x < max_x; pos_x += 3) {
         // Dibujar barco
         for (int y = 0; y < barco_alto; y++) {
@@ -207,7 +207,7 @@ void pantallaCargaSimple() {
             }
         }
 
-        Sleep(100); // Velocidad de animaciÃ³n (ajustable)
+        Sleep(100); // Velocidad de animaciÃƒÂ³n (ajustable)
 
         // Borrar barco para el siguiente frame
         for (int y = 0; y < barco_alto; y++) {
@@ -704,24 +704,31 @@ void mostrarReserva(Reserva res) {
     char respuesta;
 	gotoxy(3,y++); respuesta= validar_dosletras("Desea ver la informacion de los pasajeros? (S/N): ",3, y+++2,"S","N","s","n");
 	y++;
-    if (respuesta == 'S' || respuesta == 's') {
-		system("cls");
-		marco();
-		y=3;
-		gotoxy(35, y++); cout << "--- PASAJEROS DE LA RESERVA ---";
-		y++;
-        int i = 0;
-        while (i < res.num_pasajeros) {
+if (respuesta == 'S' || respuesta == 's') {
+    int i = 0;
+    while (i < res.num_pasajeros) {
+        system("cls");
+        marco();
+        int y = 3;
+        gotoxy(35, y++); cout << "--- PASAJEROS DE LA RESERVA ---";
+        y++;
+        // Mostrar hasta 3 pasajeros por pantalla
+        int mostrados = 0;
+        for (; i < res.num_pasajeros && mostrados < 3; ++i, ++mostrados) {
             gotoxy(5, y++); cout << "  P" << i + 1 << ":";
             gotoxy(7, y++); cout << "Nombre: " << res.pasajeros[i].nombre;
             gotoxy(7, y++); cout << "Edad: " << res.pasajeros[i].edad;
             gotoxy(7, y++); cout << "Genero: " << res.pasajeros[i].genero;
             gotoxy(7, y++); cout << "Camarote: " << res.pasajeros[i].tipo_camarote;
             gotoxy(7, y++); cout << "Precio: EUR " << res.pasajeros[i].precio_pasaje;
-            y++; // Linea en blanco entre pasajeros
-            i++;
+            y++; // LÃ­nea en blanco entre pasajeros
+        }
+        if (i < res.num_pasajeros) {
+            gotoxy(40, 27); cout << "Presione una tecla para ver mÃ¡s pasajeros...";
+            getch();
         }
     }
+}//Fin del if de mostrar pasajeros
     gotoxy(40, 27); cout << "Presione una tecla para continuar...";
     getch();
 }
@@ -918,7 +925,7 @@ void modificarReserva() {
                         gotoxy(3,7); cout << "Dia de salida (1-" << maxdia << "): ";
                         res.fecha_salida.dia = validar_numero(1,maxdia,"Dia de salida: ",3,7);
                         gotoxy(3,8); cout << "Ano de salida (2025-2100): ";
-                        res.fecha_salida.anio = validar_numero(2025,2100,"AÃ±o de salida: ",3,8);
+                        res.fecha_salida.anio = validar_numero(2025,2100,"AÃƒÂ±o de salida: ",3,8);
                         gotoxy(3,9); cout << "Hora de embarque (0-23): ";
                         res.embarque.hora = validar_numero(0,23,"Hora embarque: ",3,9);
                         gotoxy(3,10); cout << "Minuto de embarque (0-59): ";
@@ -929,8 +936,8 @@ void modificarReserva() {
                         maxdia = (res.fecha_reserva.mes==4 || res.fecha_reserva.mes==6 || res.fecha_reserva.mes==9 || res.fecha_reserva.mes==11)?30:31;
                         gotoxy(3,12); cout << "Dia de reserva (1-" << maxdia << "): ";
                         res.fecha_reserva.dia = validar_numero(1,maxdia,"Dia reserva: ",3,12);
-                        gotoxy(3,13); cout << "AÃ±o de reserva (2025-2100): ";
-                        res.fecha_reserva.anio = validar_numero(2025,2100,"AÃ±o reserva: ",3,13);
+                        gotoxy(3,13); cout << "AÃƒÂ±o de reserva (2025-2100): ";
+                        res.fecha_reserva.anio = validar_numero(2025,2100,"AÃƒÂ±o reserva: ",3,13);
                         reservaModificada = true;
                         break;
                     }
@@ -993,13 +1000,13 @@ void modificarReserva() {
             }
         }
 
-        // Guardar en temporal: solo guardar modificado si es la reserva que cambiÃ³,
+        // Guardar en temporal: solo guardar modificado si es la reserva que cambiÃƒÂ³,
         // y si hubo cambios, y si no, guardar como estaba
         if (encontrado && strcmp(res.numero_reserva, nroReservaBuscada) == 0) {
             if (cambios) {
                 fwrite(&res, sizeof(Reserva), 1, fTemp);
             } else {
-                // Si no hubo cambios, guarda la original (opcional, aquÃ­ igual que el actual)
+                // Si no hubo cambios, guarda la original (opcional, aquÃƒÂ­ igual que el actual)
                 fwrite(&res, sizeof(Reserva), 1, fTemp);
             }
         } else {
@@ -1206,7 +1213,7 @@ void reporteLineaCrucero() {
     gotoxy(45, 3); cout << "REPORTE POR LINEA DE CRUCERO";
     
     char linea[50];
-    gotoxy(3, 6); cout << "Ingrese la Línea de Crucero: ";
+    gotoxy(3, 6); cout << "Ingrese la LÃ­nea de Crucero: ";
     fflush(stdin);
     gets(linea);
     
@@ -1216,33 +1223,33 @@ void reporteLineaCrucero() {
     gotoxy(3, 8); cout << "Ordenar por:";
     gotoxy(3, 9); cout << "1. Monto Ascendente";
     gotoxy(3, 10); cout << "2. Monto Descendente";
-    gotoxy(3, 11); cout << "Opción: ";
+    gotoxy(3, 11); cout << "OpciÃ³n: ";
 
     gotoxy(3, 15); cout << "Moneda:";
     gotoxy(3, 16); cout << "1. Euros (EUR)";
-    gotoxy(3, 17); cout << "2. Dólares (USD)";
-    gotoxy(3, 18); cout << "3. Bolívares (BS)";
-    gotoxy(3, 19); cout << "Opción: ";
+    gotoxy(3, 17); cout << "2. DÃ³lares (USD)";
+    gotoxy(3, 18); cout << "3. BolÃ­vares (BS)";
+    gotoxy(3, 19); cout << "OpciÃ³n: ";
 
-    // Validar opción de orden
+    // Validar opciÃ³n de orden
     do {
-        borrarLinea(3, 11); // Borrar la línea anterior
-        gotoxy(3, 11); cout << "Opción: ";
+        borrarLinea(3, 11); // Borrar la lÃ­nea anterior
+        gotoxy(3, 11); cout << "OpciÃ³n: ";
         cin >> orden;
         if (orden < 1 || orden > 2) {
-            gotoxy(3, 13); cout << "Opción inválida. Por favor, ingrese una opción válida.";
+            gotoxy(3, 13); cout << "OpciÃ³n invÃ¡lida. Por favor, ingrese una opciÃ³n vÃ¡lida.";
             getch();
             borrarLinea(3, 13); // Borrar el mensaje de error
         }
     } while (orden < 1 || orden > 2);
     
-    // Validar opción de moneda
+    // Validar opciÃ³n de moneda
     do {
-        borrarLinea(3, 19); // Borrar la línea anterior
-        gotoxy(3, 19); cout << "Opción: ";
+        borrarLinea(3, 19); // Borrar la lÃ­nea anterior
+        gotoxy(3, 19); cout << "OpciÃ³n: ";
         cin >> moneda;
         if (moneda < 1 || moneda > 3) {
-            gotoxy(3, 21); cout << "Opción inválida. Por favor, ingrese una opción válida.";
+            gotoxy(3, 21); cout << "OpciÃ³n invÃ¡lida. Por favor, ingrese una opciÃ³n vÃ¡lida.";
             getch();
             borrarLinea(3, 21); // Borrar el mensaje de error
         }
@@ -1251,11 +1258,11 @@ void reporteLineaCrucero() {
     // Validar tasa de cambio si se selecciona USD o BS
     if (moneda > 1) {
         do {
-            borrarLinea(3, 23); // Borrar la línea anterior
+            borrarLinea(3, 23); // Borrar la lÃ­nea anterior
             gotoxy(3, 23); cout << "Ingrese tasa de cambio (1 EUR = ?): ";
             cin >> tasa;
             if (tasa <= 0) {
-                gotoxy(3, 25); cout << "Tasa de cambio inválida. Por favor, ingrese un valor positivo.";
+                gotoxy(3, 25); cout << "Tasa de cambio invÃ¡lida. Por favor, ingrese un valor positivo.";
                 getch();
                 borrarLinea(3, 25); // Borrar el mensaje de error
             }
@@ -1291,7 +1298,7 @@ void reporteLineaCrucero() {
     fclose(arch);
     
     if (cont == 0) {
-        gotoxy(3, 27); cout << "No se encontraron reservas para esta línea.";
+        gotoxy(3, 27); cout << "No se encontraron reservas para esta lÃ­nea.";
         getch();
         return;
     }
@@ -1384,17 +1391,17 @@ void reporteViajesTemporada() {
     gotoxy(3, 6); cout << "FECHA INICIAL DEL RANGO:";
     gotoxy(3, 7); cout << "  Mes (1-12): " << fechaInicio.mes;
     
-    // Validar día según mes
+    // Validar dÃ­a segÃºn mes
     int maxDia;
     if (fechaInicio.mes == 4 || fechaInicio.mes == 6 || fechaInicio.mes == 9 || fechaInicio.mes == 11) {
         maxDia = 30;
-        fechaInicio.dia = validar_numero(1, 30, "  Día (1-30): ", 3, 8);
+        fechaInicio.dia = validar_numero(1, 30, "  DÃ­a (1-30): ", 3, 8);
     } else if (fechaInicio.mes == 2) {
         maxDia = 28;
-        fechaInicio.dia = validar_numero(1, 28, "  Día (1-28): ", 3, 8);
+        fechaInicio.dia = validar_numero(1, 28, "  DÃ­a (1-28): ", 3, 8);
     } else {
         maxDia = 31;
-        fechaInicio.dia = validar_numero(1, 31, "  Día (1-31): ", 3, 8);
+        fechaInicio.dia = validar_numero(1, 31, "  DÃ­a (1-31): ", 3, 8);
     }
     mostrar2(3, 8, 30, 2, fechaInicio);
     
@@ -1403,10 +1410,10 @@ void reporteViajesTemporada() {
     gotoxy(35, 3); cout << "REPORTE POR TEMPORADA (FECHAS DE SALIDA)";
     gotoxy(3, 6); cout << "FECHA INICIAL DEL RANGO:";
     gotoxy(3, 7); cout << "  Mes (1-12): " << fechaInicio.mes;
-    gotoxy(3, 8); cout << "  Día (1-" << maxDia << "): " << fechaInicio.dia;
+    gotoxy(3, 8); cout << "  DÃ­a (1-" << maxDia << "): " << fechaInicio.dia;
     
-    // Validar año
-    fechaInicio.anio = validar_numero(2024, 2100, "  Año (2024-2100): ", 3, 9);
+    // Validar aÃ±o
+    fechaInicio.anio = validar_numero(2024, 2100, "  AÃ±o (2024-2100): ", 3, 9);
     mostrar2(3, 9, 30, 3, fechaInicio);
     totalInicio = fechaInicio.anio * 365 + fechaInicio.mes * 30 + fechaInicio.dia;
 
@@ -1430,16 +1437,16 @@ void reporteViajesTemporada() {
                                 << fechaInicio.dia << "/" << fechaInicio.mes << "/" << fechaInicio.anio << "):";
         gotoxy(3, 7); cout << "  Mes (1-12): " << fechaFin.mes;
         
-        // Validar día según mes
+        // Validar dÃ­a segÃºn mes
         if (fechaFin.mes == 4 || fechaFin.mes == 6 || fechaFin.mes == 9 || fechaFin.mes == 11) {
             maxDia = 30;
-            fechaFin.dia = validar_numero(1, 30, "  Día (1-30): ", 3, 8);
+            fechaFin.dia = validar_numero(1, 30, "  DÃ­a (1-30): ", 3, 8);
         } else if (fechaFin.mes == 2) {
             maxDia = 28;
-            fechaFin.dia = validar_numero(1, 28, "  Día (1-28): ", 3, 8);
+            fechaFin.dia = validar_numero(1, 28, "  DÃ­a (1-28): ", 3, 8);
         } else {
             maxDia = 31;
-            fechaFin.dia = validar_numero(1, 31, "  Día (1-31): ", 3, 8);
+            fechaFin.dia = validar_numero(1, 31, "  DÃ­a (1-31): ", 3, 8);
         }
         mostrar2(3, 8, 30, 2, fechaFin);
         
@@ -1449,15 +1456,15 @@ void reporteViajesTemporada() {
         gotoxy(3, 6); cout << "FECHA FINAL DEL RANGO (posterior a " 
                                 << fechaInicio.dia << "/" << fechaInicio.mes << "/" << fechaInicio.anio << "):";
         gotoxy(3, 7); cout << "  Mes (1-12): " << fechaFin.mes;
-        gotoxy(3, 8); cout << "  Día (1-" << maxDia << "): " << fechaFin.dia;
+        gotoxy(3, 8); cout << "  DÃ­a (1-" << maxDia << "): " << fechaFin.dia;
         
-        // Validar año
-        fechaFin.anio = validar_numero(2024, 2100, "  Año (2024-2100): ", 3, 9);
+        // Validar aÃ±o
+        fechaFin.anio = validar_numero(2024, 2100, "  AÃ±o (2024-2100): ", 3, 9);
         mostrar2(3, 9, 30, 3, fechaFin);
         totalFin = fechaFin.anio * 365 + fechaFin.mes * 30 + fechaFin.dia;
         
         if (totalFin < totalInicio) {
-            gotoxy(3, 11); cout << "¡ERROR! La fecha final debe ser posterior a la inicial";
+            gotoxy(3, 11); cout << "Â¡ERROR! La fecha final debe ser posterior a la inicial";
             getch();
         }
     } while (totalFin < totalInicio);
@@ -1471,7 +1478,7 @@ void reporteViajesTemporada() {
     gotoxy(3, y_pos++); cout << "1. Todas las reservas";
     gotoxy(3, y_pos++); cout << "2. Solo activas";
     gotoxy(3, y_pos++); cout << "3. Solo canceladas";
-    int opcionEstado = validar_numero(1, 3, "Opción: ", 3, y_pos++);
+    int opcionEstado = validar_numero(1, 3, "OpciÃ³n: ", 3, y_pos++);
 
     // MOSTRAR RESULTADOS
     system("CLS");
@@ -1598,7 +1605,7 @@ void CancelacionesPorEdadDestino() {
     gotoxy(30, 5); cout << "Destino del crucero: ";
     fflush(stdin); gets(destino);
 
-    edad_min = validar_numero(0, 100, "Edad mínima para filtrar: ", 30, 7);
+    edad_min = validar_numero(0, 100, "Edad mÃ­nima para filtrar: ", 30, 7);
 
     fflush(stdin); 
     filtro = validar_dosletras("Desea filtrar por categoria de cabina? (S/N): ", 30, 9, "S", "N", "s", "n");
@@ -1623,7 +1630,7 @@ void CancelacionesPorEdadDestino() {
     
     system("cls"); marco();
     gotoxy(30, 3); cout << "CANCELACIONES EN DESTINO: " << destino;
-    gotoxy(10, 5); cout << "Edad mínima: " << edad_min;
+    gotoxy(10, 5); cout << "Edad mÃ­nima: " << edad_min;
     if (usarFiltro) {
         gotoxy(10, 6); cout << "Filtro de cabina: " << cabinaFiltro;
         y = 8;
@@ -1638,7 +1645,7 @@ void CancelacionesPorEdadDestino() {
             for (int i = 0; i < r.num_pasajeros; i++) {
                 Pasajero p = r.pasajeros[i];
                 if (p.edad >= edad_min && (!usarFiltro || strcmp(r.categoria_cabina, cabinaFiltro) == 0)) {
-                    gotoxy(10, y++); cout << "Pasajero: " << p.nombre << ", Edad: " << p.edad << ", Género: " << p.genero;
+                    gotoxy(10, y++); cout << "Pasajero: " << p.nombre << ", Edad: " << p.edad << ", GÃ©nero: " << p.genero;
                     gotoxy(10, y++); cout << "Camarote: " << p.tipo_camarote << ", Precio: " << p.precio_pasaje << " EUR";
                     gotoxy(10, y++); cout << "Categoria Cabina: " << r.categoria_cabina;
                     gotoxy(10, y++); cout << "--------------------------------------------------";
