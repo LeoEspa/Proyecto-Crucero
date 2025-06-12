@@ -167,19 +167,19 @@ void pantallaCargaSimple() {
     int max_x = 118 - barco_ancho;
     int pos_x = 5;
 
-    // Olas mÃ¡s detalladas
+    // Olas mÃƒÂ¡s detalladas
     const char* ola[] = {"~~", "_\\_", "~/~"};
 
     gotoxy(45, 8); cout << "C A R G A N D O   S I S T E M A";
 
-    // Dibujar olas estÃ¡ticas
+    // Dibujar olas estÃƒÂ¡ticas
     for (int x = 5; x < 115; x += 4) {
         gotoxy(x, 20); cout << ola[0];
         gotoxy(x, 21); cout << ola[1];
         gotoxy(x+2, 22); cout << ola[2];
     }
 
-    // AnimaciÃ³n de un solo recorrido
+    // AnimaciÃƒÂ³n de un solo recorrido
     for (pos_x = 5; pos_x < max_x; pos_x += 3) {
         // Dibujar barco
         for (int y = 0; y < barco_alto; y++) {
@@ -207,7 +207,7 @@ void pantallaCargaSimple() {
             }
         }
 
-        Sleep(100); // Velocidad de animaciÃ³n (ajustable)
+        Sleep(100); // Velocidad de animaciÃƒÂ³n (ajustable)
 
         // Borrar barco para el siguiente frame
         for (int y = 0; y < barco_alto; y++) {
@@ -1186,7 +1186,7 @@ void eliminarReserva() {
         return;
     }
 
-    // First, find and show the reservation
+    
     while (fread(&res, sizeof(Reserva), 1, fOriginal)) {
         if (strcmp(res.numero_reserva, nroReservaBuscada) == 0) {
             encontrado = true;
@@ -1196,7 +1196,7 @@ void eliminarReserva() {
     fclose(fOriginal);
 
     if (encontrado) {
-        mostrarReserva(res); // Show the full details first
+        mostrarReserva(res); 
 
         gotoxy(3, 26); cout << "ESTA SEGURO QUE DESEA ELIMINAR ESTA RESERVA? (S/N): ";
         char confirmacion = getch();
@@ -1364,7 +1364,7 @@ void reporteLineaCrucero() {
     gotoxy(3, 18); cout << "3. Bolivares (BS)";
     gotoxy(3, 19); cout << "Opcion: ";
 
-    // Validar opción de orden
+    // Validar opciÃ³n de orden
     do {
         borrarLinea(3, 11); // Borrar la linea anterior
         gotoxy(3, 11); cout << "Opcion: ";
@@ -1391,7 +1391,7 @@ void reporteLineaCrucero() {
     // Validar tasa de cambio si se selecciona USD o BS
     if (moneda > 1) {
         do {
-            borrarLinea(3, 23); // Borrar la línea anterior
+            borrarLinea(3, 23); // Borrar la lÃ­nea anterior
             gotoxy(3, 23); cout << "Ingrese tasa de cambio (1 EUR = ?): ";
             cin >> tasa;
             if (tasa <= 0) {
@@ -1524,17 +1524,17 @@ void reporteViajesTemporada() {
     gotoxy(3, 6); cout << "FECHA INICIAL DEL RANGO:";
     gotoxy(3, 7); cout << "  Mes (1-12): " << fechaInicio.mes;
     
-    // Validar d�a seg�n mes
+    // Validar día según mes
     int maxDia;
     if (fechaInicio.mes == 4 || fechaInicio.mes == 6 || fechaInicio.mes == 9 || fechaInicio.mes == 11) {
         maxDia = 30;
-        fechaInicio.dia = validar_numero(1, 30, "  D�a (1-30): ", 3, 8);
+        fechaInicio.dia = validar_numero(1, 30, "  Día (1-30): ", 3, 8);
     } else if (fechaInicio.mes == 2) {
         maxDia = 28;
-        fechaInicio.dia = validar_numero(1, 28, "  D�a (1-28): ", 3, 8);
+        fechaInicio.dia = validar_numero(1, 28, "  Día (1-28): ", 3, 8);
     } else {
         maxDia = 31;
-        fechaInicio.dia = validar_numero(1, 31, "  D�a (1-31): ", 3, 8);
+        fechaInicio.dia = validar_numero(1, 31, "  Día (1-31): ", 3, 8);
     }
     mostrar2(3, 8, 30, 2, fechaInicio);
     
@@ -1543,10 +1543,10 @@ void reporteViajesTemporada() {
     gotoxy(35, 3); cout << "REPORTE POR TEMPORADA (FECHAS DE SALIDA)";
     gotoxy(3, 6); cout << "FECHA INICIAL DEL RANGO:";
     gotoxy(3, 7); cout << "  Mes (1-12): " << fechaInicio.mes;
-    gotoxy(3, 8); cout << "  D�a (1-" << maxDia << "): " << fechaInicio.dia;
+    gotoxy(3, 8); cout << "  Día (1-" << maxDia << "): " << fechaInicio.dia;
     
-    // Validar a�o
-    fechaInicio.anio = validar_numero(2024, 2100, "  A�o (2024-2100): ", 3, 9);
+    // Validar año
+    fechaInicio.anio = validar_numero(2024, 2100, "  Año (2024-2100): ", 3, 9);
     mostrar2(3, 9, 30, 3, fechaInicio);
     totalInicio = fechaInicio.anio * 365 + fechaInicio.mes * 30 + fechaInicio.dia;
 
@@ -1570,16 +1570,16 @@ void reporteViajesTemporada() {
                                 << fechaInicio.dia << "/" << fechaInicio.mes << "/" << fechaInicio.anio << "):";
         gotoxy(3, 7); cout << "  Mes (1-12): " << fechaFin.mes;
         
-        // Validar d�a seg�n mes
+        // Validar día según mes
         if (fechaFin.mes == 4 || fechaFin.mes == 6 || fechaFin.mes == 9 || fechaFin.mes == 11) {
             maxDia = 30;
-            fechaFin.dia = validar_numero(1, 30, "  D�a (1-30): ", 3, 8);
+            fechaFin.dia = validar_numero(1, 30, "  Día (1-30): ", 3, 8);
         } else if (fechaFin.mes == 2) {
             maxDia = 28;
-            fechaFin.dia = validar_numero(1, 28, "  D�a (1-28): ", 3, 8);
+            fechaFin.dia = validar_numero(1, 28, "  Día (1-28): ", 3, 8);
         } else {
             maxDia = 31;
-            fechaFin.dia = validar_numero(1, 31, "  D�a (1-31): ", 3, 8);
+            fechaFin.dia = validar_numero(1, 31, "  Día (1-31): ", 3, 8);
         }
         mostrar2(3, 8, 30, 2, fechaFin);
         
@@ -1589,15 +1589,15 @@ void reporteViajesTemporada() {
         gotoxy(3, 6); cout << "FECHA FINAL DEL RANGO (posterior a " 
                                 << fechaInicio.dia << "/" << fechaInicio.mes << "/" << fechaInicio.anio << "):";
         gotoxy(3, 7); cout << "  Mes (1-12): " << fechaFin.mes;
-        gotoxy(3, 8); cout << "  D�a (1-" << maxDia << "): " << fechaFin.dia;
+        gotoxy(3, 8); cout << "  Día (1-" << maxDia << "): " << fechaFin.dia;
         
-        // Validar a�o
-        fechaFin.anio = validar_numero(2024, 2100, "  A�o (2024-2100): ", 3, 9);
+        // Validar año
+        fechaFin.anio = validar_numero(2024, 2100, "  Año (2024-2100): ", 3, 9);
         mostrar2(3, 9, 30, 3, fechaFin);
         totalFin = fechaFin.anio * 365 + fechaFin.mes * 30 + fechaFin.dia;
         
         if (totalFin < totalInicio) {
-            gotoxy(3, 11); cout << "�ERROR! La fecha final debe ser posterior a la inicial";
+            gotoxy(3, 11); cout << "¡ERROR! La fecha final debe ser posterior a la inicial";
             getch();
         }
     } while (totalFin < totalInicio);
