@@ -936,8 +936,8 @@ void modificarReserva() {
                         maxdia = (res.fecha_reserva.mes==4 || res.fecha_reserva.mes==6 || res.fecha_reserva.mes==9 || res.fecha_reserva.mes==11)?30:31;
                         gotoxy(3,12); cout << "Dia de reserva (1-" << maxdia << "): ";
                         res.fecha_reserva.dia = validar_numero(1,maxdia,"Dia reserva: ",3,12);
-                        gotoxy(3,13); cout << "Ano de reserva (2025-2100): ";
-                        res.fecha_reserva.anio = validar_numero(2025,2100,"AÃ±o reserva: ",3,13);
+                        gotoxy(3,13); cout << "Ano de reserva (2024-2100): ";
+                        res.fecha_reserva.anio = validar_numero(2024,2100,"Ano reserva: ",3,13);
                         reservaModificada = true;
                         break;
                     }
